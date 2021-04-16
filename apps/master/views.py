@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, redirect
 
 def index(request):
-    return HttpResponse("OK.")
+    return redirect("/users/login")
