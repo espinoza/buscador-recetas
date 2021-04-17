@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'apps.master',
     'apps.users',
+    'apps.recipes',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -114,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -140,5 +141,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 AUTH_USER_MODEL = "users.User"
+LOGIN_URL = "/users/login"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
