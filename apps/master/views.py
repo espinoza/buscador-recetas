@@ -1,4 +1,4 @@
 from django.shortcuts import render, redirect
 
 def index(request):
-    return redirect("/users/login")
+    return redirect("/search")

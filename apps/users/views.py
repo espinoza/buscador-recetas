@@ -13,5 +13,5 @@ class UserRegistrationView(CreateView):
 class UserLoginView(LoginView):
     template_name = "users/login.html"
 
-class UserLogoutView(LoginView):
+class UserLogoutView(LogoutView):
     template_name = "users/logout.html"

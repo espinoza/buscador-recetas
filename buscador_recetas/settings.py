@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.master',
     'apps.users',
     'apps.recipes',
+    'apps.search',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
