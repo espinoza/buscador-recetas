@@ -7,6 +7,8 @@ class Recipe(models.Model):
     author = models.ForeignKey(to=User, null=True,
                                on_delete=models.SET_NULL,
                                related_name="created_recipes")
+    ingredients = models.ManyToManyField(to=Ingredient,
+                                         related_name="recipes")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -17,8 +19,6 @@ class RecipeEdition(models.Model):
                                on_delete=models.SET_NULL,
                                related_name="recipe_editions")
     ingredient_section = models.TextField(max_length=5000)
-    ingredients = models.ManyToManyField(to=Ingredient,
-                                         related_name="recipe_editions")
     preparation_section = models.TextField(max_length=10000)
     recipe = models.ForeignKey(to=Recipe, related_name="editions",
                                on_delete=models.CASCADE)

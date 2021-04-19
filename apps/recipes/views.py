@@ -1,15 +1,20 @@
 from django.shortcuts import render, redirect
+from django.views.generic import FormView
 from django.views.generic.edit import CreateView
-from .models import Recipe, RecipeEdition
+from apps.recipes.models import Recipe, RecipeEdition
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 
 class RecipeEditionCreateView(LoginRequiredMixin, CreateView):
     model = RecipeEdition
     fields = ['title', 'ingredient_section', 'preparation_section']
     template_name = "recipes/edition.html"
-    success_url = "/"
 
+    def get_success_url(self, **kwargs):
+        recipe_id = self.object.recipe.id
+        return reverse_lazy('check_recipe_ingredients',
+                            kwargs={"recipe_id": recipe_id})
 
 class NewRecipeView(RecipeEditionCreateView):
 
