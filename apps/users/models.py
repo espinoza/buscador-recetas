@@ -14,7 +14,7 @@ class User(AbstractUser):
 
 class City(models.Model):
     name = models.CharField(max_length=255)
-    city = models.ForeignKey(to="Country", on_delete=models.CASCADE,
+    country = models.ForeignKey(to="Country", on_delete=models.CASCADE,
                              default=None, related_name="cities")
 
 class Country(models.Model):

@@ -1,9 +1,15 @@
 from django.shortcuts import render, redirect
-from django.views.generic import FormView
+from django.views.generic import FormView, ListView
 from django.views.generic.edit import CreateView
 from apps.recipes.models import Recipe, RecipeEdition
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+
+
+class RecipeListView(ListView):
+    model = Recipe
+    template_name = "recipes/explore.html"
+    context_object_name = "recipes"
 
 
 class RecipeEditionCreateView(LoginRequiredMixin, CreateView):

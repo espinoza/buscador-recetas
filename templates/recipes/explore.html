@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block contents %}
+
+{% include 'navbar.html' %}
+
+<main class="container">
+
+    {% for recipe in recipes %}
+    <div class="card my-4">
+        <div class="card-header">
+            <h5 class="card-title d-inline-block">{{recipe.editions.last.title}}</h5>
+            <span>Creado por {{recipe.author.first_name}} {{recipe.author.last_name}}</span=>
+        </div>
+        <div class="card-body">
+            {% for ingredient in recipe.ingredients.all %}
+            <span class="badge bg-secondary">{{ingredient.names.first.singular}}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+</main>
+{% endblock contents %}
