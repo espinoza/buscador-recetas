@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block style %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'search/style.css' %}">
+{% endblock %}
+
 {% block title %}
 <title>¡Busca tus recetas!</title>
 {% endblock %}
@@ -9,9 +14,23 @@
 
 {% include 'navbar.html' %}
 
-<main class="container d-flex justify-content-center">
+<main class="container">
 
-    <h1>¡Busca tus recetas!</h1>
+    <h2 class="my-2">Escribe los ingredientes</h2>
 
+    <div id="input-area" class="container border my-2">
+        <input id="search-input" class="border-0 shadow-none" type="text" name="ingredient_name" id="ingredient-name">
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <input id="ingredient-names" type="hidden" name="ingredient_names" value="">
+        <input class="btn btn-success" type="submit" value="Buscar">
+    </form>
+
+    {% for recipe in recipes.all %}
+        <p>{{recipe.editions.last.title}}</p>
+    {% endfor %}
+
+    <script src="{% static 'search/ingredient_tags.js' %}"></script>
 </main>
 {% endblock contents %}

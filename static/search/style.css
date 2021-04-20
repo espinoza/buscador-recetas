@@ -1,0 +1,7 @@
+#search-input {
+    border: 0;
+}
+
+#search-input:focus {
+    outline: 0;
+}
