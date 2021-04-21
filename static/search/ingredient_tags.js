@@ -6,7 +6,8 @@ $(document).ready(function () {
       let commaPosition = inputValue.indexOf(",");
       inputValue = $(this).val().slice(0, commaPosition);
       $(this).val("");
-      let tag = "<span class='badge bg-primary mx-1'>" + inputValue + "</span>";
+      let tag = "<span class='badge bg-primary mx-1'>"
+                + inputValue + "</span>";
       $(this).before(tag);
       let ingredientNames = $("#ingredient-names").val() + inputValue + ",";
       $("#ingredient-names").val(ingredientNames);

@@ -17,12 +17,11 @@ class AddIngredientForm(forms.Form):
 
     def clean_new_ingredient(self):
         new_ingredient = self.cleaned_data.get("new_ingredient")
-        if all(char.isalpha() or char.isspace() for char in new_ingredient):
-            return new_ingredient
+        if not all(char.isalpha() or char.isspace()
+                   for char in new_ingredient):
+            raise forms.ValidationError("Nombre no válido.")
         else:
-            raise forms.ValidationError(
-                "Nombre no válido."
-            )
+            return new_ingredient
 
 
 class CreateIngredientForm(forms.ModelForm):

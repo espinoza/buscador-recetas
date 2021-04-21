@@ -4,6 +4,7 @@ from apps.recipes.models import Recipe
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.ingredients.forms import AddIngredientForm, CreateIngredientForm
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 
 class CheckRecipeIngredientsView(FormView):
@@ -32,15 +33,13 @@ class CheckRecipeIngredientsView(FormView):
         this_recipe = recipe[0]
         recipe_editions = this_recipe.editions.all().order_by("created_at")
         last_edition = recipe_editions.last()
-        new_ingredient_on_recipe = self.request.POST["new_ingredient"].strip()
+        new_ingredient_on_recipe = form.cleaned_data.get("new_ingredient")
         if new_ingredient_on_recipe not in last_edition.ingredient_section:
-            return redirect("/users/logout")
+            return redirect("/")
         names_found = IngredientName.objects.filter(
-            singular=new_ingredient_on_recipe
+            Q(singular=new_ingredient_on_recipe)
+            | Q(plural=new_ingredient_on_recipe)
         )
-        names_found.union(IngredientName.objects.filter(
-            plural=new_ingredient_on_recipe
-        ))
         if names_found:
             this_recipe.ingredients.add(names_found[0].ingredient)
         else:
