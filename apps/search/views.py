@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, FormView
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.recipes.models import Recipe
+from django.db.models import Q
 from apps.search.forms import SearchButtonForm
 
 
