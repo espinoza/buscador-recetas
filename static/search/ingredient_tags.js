@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+  let ingredientList = [];
+
   $("#search-input").bind('change keyup', function (e) {
     if ($(this).val().includes(",")) {
       let inputValue = $(this).val();
@@ -9,8 +11,10 @@ $(document).ready(function () {
       let tag = "<span class='badge bg-primary mx-1'>"
                 + inputValue + "</span>";
       $(this).before(tag);
-      let ingredientNames = $("#ingredient-names").val() + inputValue + ",";
-      $("#ingredient-names").val(ingredientNames);
+      // let ingredientNames = $("#ingredient-names").val() + inputValue + ",";
+      // $("#ingredient-names").val(ingredientNames);
+      ingredientList.push(inputValue);
+      $("#ingredient-names").val(ingredientList.join(","));
     }
   });
 
@@ -21,6 +25,7 @@ $(document).ready(function () {
   $("#search-input").keydown(function(e) {
     if (e.which == 8 && $(this).val() === "") {
       $(this).prev().remove();
+      ingredientList.pop();
     }
   });
 

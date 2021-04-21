@@ -9,7 +9,7 @@ class SearchButtonForm(forms.Form):
         widget=forms.HiddenInput(
             attrs={
                 "id": "ingredient-names",
-                "value": ",",
+                "value": "",
             }
         )
     )

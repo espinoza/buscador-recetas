@@ -18,10 +18,9 @@ class SearchByIngredientView(ListView):
         ingredient_names_db = IngredientName.objects.filter(
             Q(singular__in=ingredient_names) | Q(plural__in=ingredient_names)
         )
-        recipes = Recipe.objects.none()
 
         if search_mode == "soft":
-            recipes = Recipe.objects.all()
+            recipes = Recipe.objects.exclude(ingredients=None)
             ingredients = Ingredient.objects.filter(
                 names__in=ingredient_names_db
             )
@@ -39,6 +38,9 @@ class SearchByIngredientView(ListView):
                 recipes = recipes.intersection(
                     Recipe.objects.exclude(ingredients=ingredient)
                 )
+
+        if not ingredient_names_db:
+            recipes = Recipe.objects.none()
 
         return recipes
 
@@ -59,3 +61,5 @@ class SearchButtonView(FormView):
                            + "&ingredients=" + ingredient_names
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        return redirect("/search")
