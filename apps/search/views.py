@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, FormView
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.recipes.models import Recipe
-from django.db.models import Q
 from apps.search.forms import SearchButtonForm
 
 
@@ -15,13 +14,31 @@ class SearchByIngredientView(ListView):
         ingredient_names = self.request.GET.get("ingredients", "") \
                            .strip(",").split(",")
         search_mode = self.request.GET.get("mode", "")
-        recipes = None
         ingredient_names_db = IngredientName.objects.filter(
             Q(singular__in=ingredient_names) | Q(plural__in=ingredient_names)
         )
-        ingredients = Ingredient.objects.filter(names__in=ingredient_names_db)
+        recipes = Recipe.objects.none()
+
         if search_mode == "soft":
-            recipes = Recipe.objects.filter(ingredients__in=ingredients)
+            recipes = Recipe.objects.all()
+            ingredients = Ingredient.objects.filter(
+                names__in=ingredient_names_db
+            )
+            for ingredient in ingredients:
+                recipes = recipes.intersection(
+                    Recipe.objects.filter(ingredients=ingredient)
+                )
+
+        if search_mode == "hard":
+            recipes = Recipe.objects.exclude(ingredients=None)
+            non_ingredients = Ingredient.objects.exclude(
+                names__in=ingredient_names_db
+            )
+            for ingredient in non_ingredients:
+                recipes = recipes.intersection(
+                    Recipe.objects.exclude(ingredients=ingredient)
+                )
+
         return recipes
 
     def get_context_data(self, **kwargs):

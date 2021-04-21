@@ -5,21 +5,21 @@ import re
 class SearchButtonForm(forms.Form):
 
     ingredient_names = forms.CharField(
+        required=False,
         widget=forms.HiddenInput(
             attrs={
                 "id": "ingredient-names",
-                "value": "",
+                "value": ",",
             }
         )
     )
 
     search_mode = forms.ChoiceField(
         widget=forms.RadioSelect,
-        label="Buscar recetas que contengan...",
+        label="Buscar recetas que contengan",
         choices=[
-            ("soft", "...al menos uno de estos ingredientes"),
-            ("normal", "...todos estos ingredientes"),
-            ("hard", "...solo estos ingredientes"),
+            ("soft", "al menos estos ingredientes"),
+            ("hard", "a lo más estos ingredientes"),
         ],
     )
 
@@ -35,7 +35,7 @@ class SearchButtonForm(forms.Form):
                 "Hay un nombre de ingrediente no válido"
             )
         search_mode = cleaned_data.get("search_mode")
-        if search_mode not in ("soft", "normal", "hard"):
+        if search_mode not in ("soft", "hard"):
             raise forms.ValidationError(
                 "Problema al realizar la búsqueda"
             )
