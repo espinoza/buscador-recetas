@@ -4,12 +4,22 @@ import re
 
 class SearchButtonForm(forms.Form):
 
-    ingredient_names = forms.CharField(
+    include_ingredient_names = forms.CharField(
         required=False,
         widget=forms.HiddenInput(
             attrs={
-                "id": "ingredient-names",
-                "value": "",
+                "id": "include-ingredient-names",
+                "value": ",",
+            }
+        )
+    )
+
+    exclude_ingredient_names = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput(
+            attrs={
+                "id": "exclude-ingredient-names",
+                "value": ",",
             }
         )
     )
@@ -28,9 +38,11 @@ class SearchButtonForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(SearchButtonForm, self).clean()
-        ingredient_names = cleaned_data.get("ingredient_names")
+        include_ingredient_names = cleaned_data.get("include_ingredient_names")
+        exclude_ingredient_names = cleaned_data.get("exclude_ingredient_names")
         RE_INGREDIENTS = re.compile(r'^[a-z ,]+$')
-        if not RE_INGREDIENTS.match(ingredient_names):
+        if not (RE_INGREDIENTS.match(include_ingredient_names)
+                or RE_INGREDIENTS.match(exclude_ingredient_names)):
             raise forms.ValidationError(
                 "Hay un nombre de ingrediente no válido"
             )

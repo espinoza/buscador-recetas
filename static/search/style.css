@@ -1,7 +1,15 @@
-#search-input {
+.ingredient-input {
     border: 0;
 }
 
-#search-input:focus {
+.ingredient-input:focus {
     outline: 0;
+}
+
+#include-input-area > .badge {
+    background-color: blue;
+}
+
+#exclude-input-area > .badge {
+    background-color: red;
 }

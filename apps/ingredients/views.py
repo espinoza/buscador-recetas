@@ -31,11 +31,13 @@ class CheckRecipeIngredientsView(FormView):
         if not recipe:
             return redirect("/")
         this_recipe = recipe[0]
+
         recipe_editions = this_recipe.editions.all().order_by("created_at")
         last_edition = recipe_editions.last()
         new_ingredient_on_recipe = form.cleaned_data.get("new_ingredient")
         if new_ingredient_on_recipe not in last_edition.ingredient_section:
             return redirect("/")
+
         names_found = IngredientName.objects.filter(
             Q(singular=new_ingredient_on_recipe)
             | Q(plural=new_ingredient_on_recipe)

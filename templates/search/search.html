@@ -18,8 +18,11 @@
 
     <h2 class="my-2">Escribe los ingredientes</h2>
 
-    <div id="input-area" class="container border my-2">
-        <input id="search-input" class="border-0 shadow-none" type="text" name="ingredient_name" id="ingredient-name">
+    <div id="include-input-area" class="tags-area container border my-2">
+        <input id="include-input" class="ingredient-input border-0 shadow-none" type="text" name="include_ingredient_name">
+    </div>
+    <div id="exclude-input-area" class="tags-area container border my-2">
+        <input id="exclude-input" class="ingredient-input border-0 shadow-none" type="text" name="exclude_ingredient_name">
     </div>
     <form action="{% url 'do_search_by_ingredients' %}" method="post">
         {% csrf_token %}

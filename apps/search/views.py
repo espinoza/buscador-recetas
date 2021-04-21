@@ -12,34 +12,52 @@ class SearchByIngredientView(ListView):
     context_object_name = "recipes"
 
     def get_queryset(self, **kwargs):
-        ingredient_names = self.request.GET.get("ingredients", "") \
-                           .strip(",").split(",")
+        include_ingredient_names = self.request.GET.get("include", "") \
+            .strip(",").split(",")
+        exclude_ingredient_names = self.request.GET.get("exclude", "") \
+            .strip(",").split(",")
         search_mode = self.request.GET.get("mode", "")
-        ingredient_names_db = IngredientName.objects.filter(
-            Q(singular__in=ingredient_names) | Q(plural__in=ingredient_names)
+
+        include_ingredient_names_db = IngredientName.objects.filter(
+            Q(singular__in=include_ingredient_names)
+            | Q(plural__in=include_ingredient_names)
         )
+        exclude_ingredient_names_db = IngredientName.objects.filter(
+            Q(singular__in=exclude_ingredient_names)
+            | Q(plural__in=exclude_ingredient_names)
+        )
+        recipes = Recipe.objects.exclude(ingredients=None)
 
-        if search_mode == "soft":
-            recipes = Recipe.objects.exclude(ingredients=None)
-            ingredients = Ingredient.objects.filter(
-                names__in=ingredient_names_db
-            )
-            for ingredient in ingredients:
-                recipes = recipes.intersection(
-                    Recipe.objects.filter(ingredients=ingredient)
+        if include_ingredient_names_db or exclude_ingredient_names_db:
+            print("asdfasdfasdf")
+
+            if search_mode == "soft":
+                ingredients = Ingredient.objects.filter(
+                    names__in=include_ingredient_names_db
                 )
+                for ingredient in ingredients:
+                    recipes = recipes.intersection(
+                        Recipe.objects.filter(ingredients=ingredient)
+                    )
 
-        if search_mode == "hard":
-            recipes = Recipe.objects.exclude(ingredients=None)
-            non_ingredients = Ingredient.objects.exclude(
-                names__in=ingredient_names_db
+            if search_mode == "hard":
+                non_ingredients = Ingredient.objects.exclude(
+                    names__in=include_ingredient_names_db
+                )
+                for ingredient in non_ingredients:
+                    recipes = recipes.intersection(
+                        Recipe.objects.exclude(ingredients=ingredient)
+                    )
+
+            ingredients_to_exclude = Ingredient.objects.filter(
+                names__in=exclude_ingredient_names_db
             )
-            for ingredient in non_ingredients:
+            for ingredient in ingredients_to_exclude:
                 recipes = recipes.intersection(
                     Recipe.objects.exclude(ingredients=ingredient)
                 )
 
-        if not ingredient_names_db:
+        else:
             recipes = Recipe.objects.none()
 
         return recipes
@@ -48,17 +66,19 @@ class SearchByIngredientView(ListView):
         context = super().get_context_data(**kwargs)
         context["button_form"] = SearchButtonForm()
         return context
-    
-    
+
+
 class SearchButtonView(FormView):
     http_method_names = ['post']
     form_class = SearchButtonForm
 
     def form_valid(self, form):
         search_mode = form.cleaned_data.get("search_mode")
-        ingredient_names = form.cleaned_data.get("ingredient_names")
+        include_names = form.cleaned_data.get("include_ingredient_names")
+        exclude_names = form.cleaned_data.get("exclude_ingredient_names")
         self.success_url = "/search/?mode=" + search_mode \
-                           + "&ingredients=" + ingredient_names
+                           + "&include=" + include_names \
+                           + "&exclude=" + exclude_names
         return super().form_valid(form)
 
     def form_invalid(self, form):

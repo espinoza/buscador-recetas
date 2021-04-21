@@ -1,32 +1,45 @@
 $(document).ready(function () {
 
-  let ingredientList = [];
+  let includeIngredients = [];
+  let excludeIngredients = [];
 
-  $("#search-input").bind('change keyup', function (e) {
+  $(".ingredient-input").bind('change keyup', function (e) {
     if ($(this).val().includes(",")) {
       let inputValue = $(this).val();
       let commaPosition = inputValue.indexOf(",");
       inputValue = $(this).val().slice(0, commaPosition);
       $(this).val("");
-      let tag = "<span class='badge bg-primary mx-1'>"
+      let tag = "<span class='badge mx-1'>"
                 + inputValue + "</span>";
       $(this).before(tag);
-      // let ingredientNames = $("#ingredient-names").val() + inputValue + ",";
-      // $("#ingredient-names").val(ingredientNames);
-      ingredientList.push(inputValue);
-      $("#ingredient-names").val(ingredientList.join(","));
+      if ($(this).attr("id") == "include-input") {
+        includeIngredients.push(inputValue);
+      } else if ($(this).attr("id") == "exclude-input") {
+        excludeIngredients.push(inputValue);
+      }
+      setValues();
     }
   });
 
-  $("#input-area").click(function() {
-    $("#search-input").focus();
+  $(".tags-area").click(function() {
+    $(this).children("input").focus();
   });
 
-  $("#search-input").keydown(function(e) {
+  $(".ingredient-input").keydown(function(e) {
     if (e.which == 8 && $(this).val() === "") {
       $(this).prev().remove();
-      ingredientList.pop();
+      if ($(this).attr("id") == "include-input") {
+        includeIngredients.pop();
+      } else if ($(this).attr("id") == "exclude-input") {
+        excludeIngredients.pop();
+      }
+      setValues();
     }
   });
+
+  function setValues() {
+    $("#include-ingredient-names").val(includeIngredients.join(","));
+    $("#exclude-ingredient-names").val(excludeIngredients.join(","));
+  }
 
 });
