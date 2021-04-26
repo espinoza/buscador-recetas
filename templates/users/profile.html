@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title></title>
+{% endblock %}
+
+
+{% block contents %}
+{% include 'navbar.html' %}
+
+<main class="container">
+    <h2>{{ user.get_full_name }}</h2>
+    <h5 class="text-secondary">{{ user.username }}</h5>
+    {% if not user.private_location %}
+    <p>Ubicación: {{ user.city.name }}, {{ user.city.country.name }}</p>
+    {% endif %}
+    <div class="card">
+        <div class="card-header">Acerca de {{ user.first_name }}:</div>
+        <div class="card-body">{{ user.bio }}</div>
+    </div>
+    <h3>Recetas de {{ user.get_full_name }}:</h3>
+    {% for recipe in user.created_recipes.all %}
+        <div class="card my-4">
+            <div class="card-header">
+                <h5 class="card-title d-inline-block">{{recipe.editions.last.title}}</h5>
+            </div>
+            <div class="card-body">
+                {% for ingredient in recipe.ingredients.all %}
+                <span class="badge bg-secondary">{{ingredient.names.first.singular}}</span>
+                {% endfor %}
+            </div>
+        </div>
+    {% empty %}
+    <p>Aún no hay recetas publicadas por {{ user.first_name }}.</p>
+    {% endfor %}
+</main>
+
+{% endblock contents %}

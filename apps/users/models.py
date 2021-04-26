@@ -8,7 +8,7 @@ class User(AbstractUser):
     level = models.SmallIntegerField(default=2)
     private_location = models.BooleanField(default=True)
     updated_at = models.DateTimeField(auto_now=True)
-    location = models.ForeignKey(to="City", null=True,
+    city = models.ForeignKey(to="City", null=True,
                                  on_delete=models.SET_NULL,
                                  related_name="users")
 
