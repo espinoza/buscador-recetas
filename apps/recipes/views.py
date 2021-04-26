@@ -58,7 +58,13 @@ class EditRecipeView(RecipeEditionCreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['page_title'] = "Editar receta"
+        context["page_title"] = "Editar receta"
+        recipe = Recipe.objects.filter(id=self.kwargs['recipe_id'])
+        if not recipe:
+            return redirect("/")
+        this_recipe = recipe[0]
+        recipe_editions = this_recipe.editions.all().order_by("created_at")
+        context["ingredient_lines"] = recipe_editions.last().ingredient_lines
         return context
 
     def form_valid(self, form):
@@ -69,6 +75,22 @@ class EditRecipeView(RecipeEditionCreateView):
             return redirect("/")
         this_recipe = recipe[0]
         form.instance.recipe = this_recipe
+        form.save()
+
+        number_of_ingredients = self.request.POST["number_of_ingredients"]
+        saved_ingredients = 0
+        ingredient_number = 1
+        while saved_ingredients < int(number_of_ingredients):
+            ingredient_line = self.request.POST \
+                .get("ingredient_line_" + str(ingredient_number), None)
+            if ingredient_line:
+                new_ingredient_line = IngredientLine.objects.create(
+                    text=ingredient_line
+                )
+                form.instance.ingredient_lines.add(new_ingredient_line)
+                saved_ingredients += 1
+            ingredient_number += 1
+
         return super().form_valid(form)
 
     def get_initial(self):

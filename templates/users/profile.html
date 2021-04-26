@@ -11,6 +11,9 @@
 <main class="container">
     <h2>{{ user.get_full_name }}</h2>
     <h5 class="text-secondary">{{ user.username }}</h5>
+    {% if user.level == 1 %}
+    <h5 class="text-danger">Administrador</h5>
+    {% endif %}
     {% if not user.private_location %}
     <p>Ubicación: {{ user.city.name }}, {{ user.city.country.name }}</p>
     {% endif %}

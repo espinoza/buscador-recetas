@@ -1,7 +1,11 @@
 $(document).ready(function () {
 
-  let idIngredients = [1];
-  let lastAddedId = 1;
+  let idIngredients = [];
+  let numberOfIngredientLines = $(".ingredient-line").length;
+  for (let i = 1; i <= numberOfIngredientLines; i++) {
+    idIngredients.push(i);
+  };
+  let lastAddedId = idIngredients[idIngredients.length - 1];
 
   $(document).on('click', '.add-ingredient-line', function() {
     let tagId = $(this).attr("id");
