@@ -14,6 +14,14 @@
             {{ edition.recipe.author.get_full_name }}
         </a>
     </p>
+    <p>
+        <a href="{% url 'recipe_edition' edition.recipe.id %}">
+            <button class="btn btn-primary">Editar</button>
+        </a>
+        <a href="{% url 'recipe_history' edition.recipe.id %}">
+            <button class="btn btn-secondary">Historial</button>
+        </a>
+    </p>
     <h4>Ingredientes:</h4>
     <ul>
     {% for ingredient_line in edition.ingredient_lines.all %}

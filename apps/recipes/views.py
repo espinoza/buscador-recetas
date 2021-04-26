@@ -117,6 +117,30 @@ class RecipeDetailView(DetailView):
         if not recipe:
             return redirect("/")
         this_recipe = recipe[0]
+        edition_id = self.kwargs.get("edition_id", None)
+        print(edition_id)
+        if edition_id:
+            edition = RecipeEdition.objects.filter(id=edition_id)
+            if edition:
+                return edition[0]
         recipe_editions = this_recipe.editions.all().order_by("created_at")
-        last_edition = recipe_editions.last()
-        return last_edition
+        return recipe_editions.last()
+
+
+class RecipeHistoryListView(ListView):
+    model = RecipeEdition
+    template_name = "recipes/history.html"
+    context_object_name = "editions"
+
+    def get_queryset(self):
+        recipe_id = self.kwargs["recipe_id"]
+        recipe = Recipe.objects.filter(id=recipe_id)
+        if not recipe:
+            return redirect("/")
+        this_recipe = recipe[0]
+        return this_recipe.editions
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["last_edition"] = self.get_queryset().last()
+        return context
