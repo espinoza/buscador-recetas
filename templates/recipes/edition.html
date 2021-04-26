@@ -13,9 +13,21 @@
 
     <form method="post">
         {% csrf_token %}
-        {{ form | crispy }}
+        <p>{{ form.title.label}}: {{ form.title }}</p>
+        <input id="number-of-ingredients" type="hidden" name="number_of_ingredients" value="1">
+        <p>Ingredientes:</p>
+            <p id="line-1">
+                <input type="text" name="ingredient_line_1" id="ingredientline-1" class="ingredient-line">
+                <span id="removeline-1" class="remove-ingredient-line badge bg-danger">-</span>
+                <span id="addline-1" class="add-ingredient-line badge bg-success">+</span>
+            </p>
+            <p id="line-0"><span id="addline-0" class="add-ingredient-line badge bg-success">+</span></p>
+        <p>{{ form.preparation_section.label}}:</p>
+        <p>{{ form.preparation_section }}</p>
         <input class="btn btn-success mt-2" type="submit" value="Listo">
     </form>
 
+    {% load static %}
+    <script src="{% static 'recipes/ingredientLine.js' %}"></script>
 </main>
 {% endblock contents %}

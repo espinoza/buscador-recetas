@@ -20,8 +20,8 @@ class CheckRecipeIngredientsView(FormView):
         recipe_editions = this_recipe.editions.all().order_by("created_at")
         last_edition = recipe_editions.last()
         context = super().get_context_data(**kwargs)
-        context["ingredient_section"] = last_edition.ingredient_section
         context["ingredients"] = this_recipe.ingredients
+        context["ingredient_lines"] = last_edition.ingredient_lines.all()
         context["recipe_id"] = this_recipe.id
         context["recipe_title"] = last_edition.title
         return context

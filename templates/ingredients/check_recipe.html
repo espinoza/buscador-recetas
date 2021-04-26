@@ -12,7 +12,13 @@
 <main class="container text-center">
     <h3>Ingredientes para {{ recipe_title }}</h3>
     <div class="shadow p-2" id="ingredient-section">
-        {{ ingredient_section }}
+        <ul>
+            {% for ingredient_line in ingredient_lines %}
+            <li>{{ingredient_line.text}}</li>
+            {% empty %}
+            <p>No hay ingredientes para esta receta</p>
+            {% endfor %}
+        </ul>
     </div>
     <form class="m-3" method="post">
         {% csrf_token %}
@@ -42,7 +48,7 @@
         <li>{{ingredient.names.first.singular}}</li>
         {% endfor %}
     </ul>
-    <script src="{% static 'check_recipe_ingredients.js' %}"></script>
+    <script src="{% static 'checkRecipeIngredients.js' %}"></script>
 </main>
 
 {% endblock contents %}

@@ -18,12 +18,19 @@ class RecipeEdition(models.Model):
     author = models.ForeignKey(to=User, null=True,
                                on_delete=models.SET_NULL,
                                related_name="recipe_editions")
-    ingredient_section = models.TextField(max_length=5000)
     preparation_section = models.TextField(max_length=10000)
     recipe = models.ForeignKey(to=Recipe, related_name="editions",
                                on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class IngredientLine(models.Model):
+    text = models.CharField(max_length=255)
+    recipe_edition = models.ForeignKey(to=RecipeEdition,
+                                       related_name="ingredient_lines",
+                                       on_delete=models.CASCADE,
+                                       null=True)
 
 
 class VideoURL(models.Model):
