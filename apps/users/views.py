@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import get_user_model
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView
 from .forms import UserRegistrationForm
 from .models import User
@@ -31,3 +31,17 @@ class ProfileDetailView(DetailView):
             return redirect("/")
         profile_user = user[0]
         return profile_user
+
+
+class UserUpdateView(UpdateView):
+    model = User
+    fields = ['username', 'first_name', 'last_name', 'email',
+              'birthday']
+    template_name = "users/edit.html"
+
+    def get_object(self):
+        return self.request.user
+
+    def get_success_url(self):
+        user = self.request.user
+        return "/users/" + str(user.username) + "/profile"

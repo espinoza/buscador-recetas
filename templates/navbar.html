@@ -30,6 +30,7 @@
                         {{request.user.username}}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarUserMenu">
+                        <li><a class="dropdown-item" href="{% url 'edit_user' %}">Editar usuario</a></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
                     </ul>
 
