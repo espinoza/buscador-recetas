@@ -15,7 +15,11 @@
     <div class="card my-4">
         <div class="card-header">
             <h5 class="card-title d-inline-block">{{recipe.editions.last.title}}</h5>
-            <span>Creado por {{recipe.author.first_name}} {{recipe.author.last_name}}</span=>
+            <span>Creado por
+                <a href="{% url 'profile' recipe.author.username %}">
+                    {{recipe.author.get_full_name}}
+                </a>
+            </span>
         </div>
         <div class="card-body">
             {% for ingredient in recipe.ingredients.all %}

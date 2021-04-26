@@ -34,7 +34,9 @@
         {% for recipe in recipes %}
         <div class="card my-4">
             <div class="card-header">
-                <h5 class="card-title d-inline-block">{{recipe.editions.last.title}}</h5>
+                <h5 class="card-title d-inline-block">
+                    <a href="{% url 'view_recipe' recipe.id %}">{{recipe.editions.last.title}}</a>
+                </h5>
                 <span>Creado por 
                     <a href="{% url 'profile' recipe.author.username %}">
                         {{recipe.author.first_name}} {{recipe.author.last_name}}

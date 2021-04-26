@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import FormView, ListView
+from django.views.generic import FormView, ListView, DetailView
 from django.views.generic.edit import CreateView
 from apps.recipes.models import Recipe, RecipeEdition, IngredientLine
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -105,3 +105,18 @@ class EditRecipeView(RecipeEditionCreateView):
             "preparation_section": last_edition.preparation_section
         }
         return initial_values
+
+
+class RecipeDetailView(DetailView):
+    model = RecipeEdition
+    template_name = "recipes/view.html"
+    context_object_name = "edition"
+
+    def get_object(self):
+        recipe = Recipe.objects.filter(id=self.kwargs["recipe_id"])
+        if not recipe:
+            return redirect("/")
+        this_recipe = recipe[0]
+        recipe_editions = this_recipe.editions.all().order_by("created_at")
+        last_edition = recipe_editions.last()
+        return last_edition
