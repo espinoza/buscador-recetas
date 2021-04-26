@@ -35,7 +35,8 @@ class CheckRecipeIngredientsView(FormView):
         recipe_editions = this_recipe.editions.all().order_by("created_at")
         last_edition = recipe_editions.last()
         new_ingredient_on_recipe = form.cleaned_data.get("new_ingredient")
-        if new_ingredient_on_recipe not in last_edition.ingredient_section:
+        if not any(new_ingredient_on_recipe in ingredient_line.text
+                   for ingredient_line in last_edition.ingredient_lines.all()):
             return redirect("/")
 
         names_found = IngredientName.objects.filter(

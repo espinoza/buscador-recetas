@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, FormView
+from django.views.generic import ListView, FormView, View
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.recipes.models import Recipe
 from django.db.models import Q
@@ -82,4 +82,11 @@ class SearchButtonView(FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        return redirect("/search")
+
+
+class SearchByNameButtonView(View):
+    http_method_names = ['post']
+    
+    def post(self, request, *args, **kwargs):
         return redirect("/search")

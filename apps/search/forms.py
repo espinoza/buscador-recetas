@@ -40,7 +40,7 @@ class SearchButtonForm(forms.Form):
         cleaned_data = super(SearchButtonForm, self).clean()
         include_ingredient_names = cleaned_data.get("include_ingredient_names")
         exclude_ingredient_names = cleaned_data.get("exclude_ingredient_names")
-        RE_INGREDIENTS = re.compile(r'^[a-z ,]+$')
+        RE_INGREDIENTS = re.compile(r'^[A-Za-z_ÑñÁáÉéÍíÓóÚúÜü ,]+$')
         if not (RE_INGREDIENTS.match(include_ingredient_names)
                 or RE_INGREDIENTS.match(exclude_ingredient_names)):
             raise forms.ValidationError(

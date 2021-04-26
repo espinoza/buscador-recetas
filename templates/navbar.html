@@ -14,9 +14,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarMenu">
             <ul class="navbar-nav">
-                <form action="">
+                <form action="{% url 'do_search_by_name' %}" method="POST">
                     {% csrf_token %}
-                    <input class="p-1 rounded" type="text" name="recipe-name" id=""
+                    <input class="p-1 rounded" type="text" name="recipe_name" id="search_text"
                            placeholder="Busca una receta por su nombre">
                     <input type="submit" value="Buscar">
                 </form>
