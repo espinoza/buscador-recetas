@@ -25,7 +25,9 @@
     {% for recipe in user.created_recipes.all %}
         <div class="card my-4">
             <div class="card-header">
-                <h5 class="card-title d-inline-block">{{recipe.editions.last.title}}</h5>
+                <h5 class="card-title d-inline-block">
+                    <a href="{% url 'view_recipe' recipe.id %}">{{recipe.editions.last.title}}</a>
+                </h5>
             </div>
             <div class="card-body">
                 {% for ingredient in recipe.ingredients.all %}
