@@ -5,6 +5,7 @@ from apps.ingredients.models import Ingredient, IngredientName
 from apps.ingredients.forms import AddIngredientForm, CreateIngredientForm
 from django.urls import reverse_lazy
 from django.db.models import Q
+import re
 
 
 class CheckRecipeIngredientsView(FormView):
@@ -19,6 +20,7 @@ class CheckRecipeIngredientsView(FormView):
         this_recipe = recipe[0]
         recipe_editions = this_recipe.editions.all().order_by("created_at")
         last_edition = recipe_editions.last()
+        detect_ingredients(this_recipe, last_edition)
         context = super().get_context_data(**kwargs)
         context["ingredients"] = this_recipe.ingredients
         context["ingredient_lines"] = last_edition.ingredient_lines.all()
@@ -81,3 +83,29 @@ class AddNewIngredientToRecipeView(CreateView):
         return reverse_lazy('check_recipe_ingredients',
                             kwargs={"recipe_id": recipe_id})
 
+
+def detect_ingredients(recipe, recipe_edition):
+    if recipe_edition.recipe is not recipe:
+        return None
+    special_characters = ",.;:¡!¿?()/"
+    for ingredient_line in recipe_edition.ingredient_lines.all():
+        line = ingredient_line.text
+        for char in special_characters:
+            line.replace(char, "&")
+        phrases = re.split(r'[&]', line)
+        for phrase in phrases:
+            words = phrase.split(" ")
+            for start in range(len(words)):
+                end = len(words)
+                ingredient_found = False
+                while not ingredient_found and end > start:
+                    mini_phrase = " ".join(words[start:end])
+                    print(mini_phrase)
+                    ingredients = Ingredient.objects.filter(
+                        Q(names__singular=mini_phrase)
+                        | Q(names__plural=mini_phrase)
+                    )
+                    if ingredients:
+                        ingredient_found = True
+                        recipe.ingredients.add(*ingredients)
+                    end -= 1
