@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.views.generic import FormView, ListView, DetailView
 from django.views.generic.edit import CreateView
 from apps.recipes.models import Recipe, RecipeEdition, IngredientLine
+from apps.recipes.forms import SourceUrlForm
+from apps.scraper.models import Source
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
@@ -144,3 +146,12 @@ class RecipeHistoryListView(ListView):
         context = super().get_context_data(**kwargs)
         context["last_edition"] = self.get_queryset().last()
         return context
+
+
+class InsertSourceFormView(FormView):
+    form_class = SourceUrlForm
+    template_name = "recipes/source.html"
+
+    def form_valid(self, form):
+        source_url = form.cleaned_data["source_url"]
+        return redirect(f"/scraper/?source_url={source_url}")

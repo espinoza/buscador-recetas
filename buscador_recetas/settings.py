@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.recipes',
     'apps.ingredients',
     'apps.search',
+    'apps.scraper',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

@@ -23,4 +23,5 @@ urlpatterns = [
     path('recipes/', include('apps.recipes.urls')),
     path('ingredients/', include('apps.ingredients.urls')),
     path('search/', include('apps.search.urls')),
+    path('scraper/', include('apps.scraper.urls'))
 ]
