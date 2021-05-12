@@ -20,7 +20,17 @@
                            placeholder="Busca una receta por su nombre">
                     <input type="submit" value="Buscar">
                 </form>
-                <a class="nav-link" href="{% url 'new_recipe' %}">Agregar receta</a>
+
+                <div class="navbar-nav ms-auto dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarUserMenu"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Agregar receta
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarUserMenu">
+                        <li><a class="dropdown-item" href="{% url 'new_recipe' %}">Receta propia</a></li>
+                        <li><a class="dropdown-item" href="{% url 'insert_source' %}">Desde link externo</a></li>
+                    </ul>
+                </div>
                 <a class="nav-link" href="{% url 'explore' %}">Explorar</a>
             </ul>
             <div class="navbar-nav ms-auto dropdown">
