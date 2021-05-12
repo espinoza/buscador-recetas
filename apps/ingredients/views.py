@@ -89,7 +89,7 @@ def detect_ingredients(recipe, recipe_edition):
         return None
     special_characters = ",.;:¡!¿?()/"
     for ingredient_line in recipe_edition.ingredient_lines.all():
-        line = ingredient_line.text
+        line = ingredient_line.text.lower()
         for char in special_characters:
             line.replace(char, "&")
         phrases = re.split(r'[&]', line)

@@ -34,7 +34,7 @@ def pre_scraper(request):
         )
         new_recipe_edition.ingredient_lines.add(new_ingredient_line)
 
-    return redirect(f"/recipes/{new_recipe.id}")
+    return redirect('check_recipe_ingredients', recipe_id=new_recipe.id)
 
 
 def recetas_gratis_scraper(soup):
