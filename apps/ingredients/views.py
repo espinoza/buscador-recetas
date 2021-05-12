@@ -100,7 +100,6 @@ def detect_ingredients(recipe, recipe_edition):
                 ingredient_found = False
                 while not ingredient_found and end > start:
                     mini_phrase = " ".join(words[start:end])
-                    print(mini_phrase)
                     ingredients = Ingredient.objects.filter(
                         Q(names__singular=mini_phrase)
                         | Q(names__plural=mini_phrase)

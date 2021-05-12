@@ -28,7 +28,8 @@ class NewRecipeView(RecipeEditionCreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['page_title'] = "Nueva receta"
+        context["page_title"] = "Nueva receta"
+        context["number_of_ingredients"] = "Nueva receta"
         return context
 
     def form_valid(self, form):
@@ -66,7 +67,9 @@ class EditRecipeView(RecipeEditionCreateView):
             return redirect("/")
         this_recipe = recipe[0]
         recipe_editions = this_recipe.editions.all().order_by("created_at")
-        context["ingredient_lines"] = recipe_editions.last().ingredient_lines
+        ingredient_lines = recipe_editions.last().ingredient_lines
+        context["ingredient_lines"] = ingredient_lines
+        context["number_of_ingredients"] = len(ingredient_lines.all())
         return context
 
     def form_valid(self, form):
@@ -120,7 +123,6 @@ class RecipeDetailView(DetailView):
             return redirect("/")
         this_recipe = recipe[0]
         edition_id = self.kwargs.get("edition_id", None)
-        print(edition_id)
         if edition_id:
             edition = RecipeEdition.objects.filter(id=edition_id)
             if edition:

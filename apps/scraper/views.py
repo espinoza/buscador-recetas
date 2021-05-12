@@ -41,7 +41,6 @@ def recetas_gratis_scraper(soup):
     title_item = soup.find(class_="titulo")
     start = len("Receta de ")
     title = title_item.text[start:]
-    print(title)
 
     ingredient_li_items = soup.find_all(class_="ingrediente")
     ingredient_lines = [li.text.strip("\n") for li in ingredient_li_items]

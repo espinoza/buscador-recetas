@@ -14,7 +14,7 @@
     <form method="post">
         {% csrf_token %}
         <p>{{ form.title.label}}: {{ form.title }}</p>
-        <input id="number-of-ingredients" type="hidden" name="number_of_ingredients" value="1">
+        <input id="number-of-ingredients" type="hidden" name="number_of_ingredients" value="{{number_of_ingredients}}">
         <p>Ingredientes:</p>
             {% for ingredient_line in ingredient_lines.all %}
                 <p id="line-{{forloop.counter}}">
