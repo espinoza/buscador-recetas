@@ -29,7 +29,7 @@ class NewRecipeView(RecipeEditionCreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["page_title"] = "Nueva receta"
-        context["number_of_ingredients"] = "Nueva receta"
+        context["number_of_ingredients"] = 1
         return context
 
     def form_valid(self, form):
