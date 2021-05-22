@@ -28,7 +28,8 @@ pip install -r requirements.txt
 ```
 sudo -u usuario_postgresql psql
 ```
-reemplazando `usuario_postgresql` con el nombre de usuario de PostgreSQL. Generalmente, el nombre de usuario por defecto es `postgres`.
+reemplazando `usuario_postgresql` con el nombre de usuario de PostgreSQL.
+Generalmente, el nombre de usuario por defecto es `postgres`.
 
 
 5. Crear base de datos y salir de PostgreSQL:
@@ -46,7 +47,8 @@ DB_NAME=nombre_base_de_datos
 DB_USER=usuario_postgresql
 DB_PASSWORD=contraseña_postgresql
 ```
-reemplazando `nombre_base_de_datos`, `usuario_postgresql` y `contraseña_postgresql` con sus valores correspondientes.
+reemplazando `nombre_base_de_datos`, `usuario_postgresql` y `contraseña_postgresql`
+con sus valores correspondientes.
 
 
 7. Migrar base de datos:
@@ -59,4 +61,5 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Se puede acceder a la aplicación a través de un navegador web, utilizando la dirección `http://localhost:8000`.
+Se puede acceder a la aplicación a través de un navegador web, utilizando la
+dirección `http://localhost:8000`.

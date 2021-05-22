@@ -4,7 +4,8 @@ from apps.ingredients.models import Ingredient
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(to=User, null=True,
+    author = models.ForeignKey(to=User,
+                               null=True,
                                on_delete=models.SET_NULL,
                                related_name="created_recipes")
     ingredients = models.ManyToManyField(to=Ingredient,
@@ -15,11 +16,13 @@ class Recipe(models.Model):
 
 class RecipeEdition(models.Model):
     title = models.CharField(max_length=255)
-    author = models.ForeignKey(to=User, null=True,
+    author = models.ForeignKey(to=User,
+                               null=True,
                                on_delete=models.SET_NULL,
                                related_name="recipe_editions")
     preparation_section = models.TextField(max_length=10000)
-    recipe = models.ForeignKey(to=Recipe, related_name="editions",
+    recipe = models.ForeignKey(to=Recipe,
+                               related_name="editions",
                                on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

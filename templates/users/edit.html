@@ -10,6 +10,7 @@
 {% include 'navbar.html' %}
 
 <main class="container">
+
     <form method="post">
         {% csrf_token %}
         <p>{{ form | crispy }}</p>
@@ -17,4 +18,5 @@
     </form>
 
 </main>
+
 {% endblock contents %}

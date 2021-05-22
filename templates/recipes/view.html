@@ -8,12 +8,14 @@
 {% include 'navbar.html' %}
 
 <main class="container justify-content-center">
+
     <h1>{{edition.title}}</h1>
     <p>Creado por
         <a href="{% url 'profile' edition.recipe.author.username %}">
             {{ edition.recipe.author.get_full_name }}
         </a>
     </p>
+
     <p>
         <a href="{% url 'recipe_edition' edition.recipe.id %}">
             <button class="btn btn-primary">Editar</button>
@@ -22,16 +24,21 @@
             <button class="btn btn-secondary">Historial</button>
         </a>
     </p>
+
     <h4>Ingredientes:</h4>
     <ul>
-    {% for ingredient_line in edition.ingredient_lines.all %}
-        <li>{{ ingredient_line.text }}</li>
-    {% empty %}
-    <p>No existen especificaciones de ingredientes para esta receta.</p>
-    {% endfor %}
+        {% for ingredient_line in edition.ingredient_lines.all %}
+            <li>{{ ingredient_line.text }}</li>
+        {% empty %}
+            <p>
+                No existen especificaciones de ingredientes para esta receta.
+            </p>
+        {% endfor %}
     </ul>
+
     <h4>Preparación:</h4>
     <p>{{ edition.preparation_section | linebreaks }}</p>
+
 </main>
 
 {% endblock contents %}

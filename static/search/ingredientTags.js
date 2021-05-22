@@ -3,7 +3,7 @@ $(document).ready(function () {
   let includeIngredients = [];
   let excludeIngredients = [];
 
-  $(".ingredient-input").bind('change keyup', function (e) {
+  $(".ingredient-input").bind('change keyup', function () {
     if ($(this).val().includes(",")) {
       let inputValue = $(this).val();
       let commaPosition = inputValue.indexOf(",");

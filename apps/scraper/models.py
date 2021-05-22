@@ -16,13 +16,15 @@ class Host(models.Model):
 
 
 class Source(models.Model):
-    host = models.ForeignKey(to=Host, on_delete=models.CASCADE,
+    host = models.ForeignKey(to=Host,
+                             on_delete=models.CASCADE,
                              related_name="sources")
     url_path = models.CharField(max_length=255)
     clicks = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-    recipe = models.OneToOneField(to=Recipe, null=True,
+    recipe = models.OneToOneField(to=Recipe,
+                                  null=True,
                                   on_delete=models.SET_NULL,
                                   related_name="source")
 

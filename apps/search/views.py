@@ -6,6 +6,11 @@ from django.db.models import Q
 from apps.search.forms import SearchButtonForm
 
 
+class ExploreRecipesListView(ListView):
+    model = Recipe
+    template_name = "search/search.html"
+    context_object_name = "recipes"
+
 class SearchByIngredientView(ListView):
     model = Recipe
     template_name = "search/search.html"
@@ -29,7 +34,6 @@ class SearchByIngredientView(ListView):
         recipes = Recipe.objects.exclude(ingredients=None)
 
         if include_ingredient_names_db or exclude_ingredient_names_db:
-            print("asdfasdfasdf")
 
             if search_mode == "soft":
                 ingredients = Ingredient.objects.filter(
