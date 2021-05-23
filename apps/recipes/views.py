@@ -24,25 +24,11 @@ class RecipeEditionCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy('check_recipe_ingredients',
                             kwargs={"recipe_id": recipe_id})
 
-class NewRecipeView(RecipeEditionCreateView):
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["page_title"] = "Nueva receta"
-        context["number_of_ingredients"] = 1
-        return context
-
     def form_valid(self, form):
-
-        user = self.request.user
-        form.instance.author = user
-        new_recipe = Recipe.objects.create(author=user)
-        form.instance.recipe = new_recipe
-        form.save()
-
         number_of_ingredients = self.request.POST["number_of_ingredients"]
         saved_ingredients = 0
         ingredient_number = 1
+        form.save()
         while saved_ingredients < int(number_of_ingredients):
             ingredient_line = self.request.POST \
                 .get("ingredient_line_" + str(ingredient_number), None)
@@ -54,6 +40,22 @@ class NewRecipeView(RecipeEditionCreateView):
                 saved_ingredients += 1
             ingredient_number += 1
 
+        return super().form_valid(form)
+
+
+class NewRecipeView(RecipeEditionCreateView):
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = "Nueva receta"
+        context["number_of_ingredients"] = 1
+        return context
+
+    def form_valid(self, form):
+        user = self.request.user
+        form.instance.author = user
+        new_recipe = Recipe.objects.create(author=user)
+        form.instance.recipe = new_recipe
         return super().form_valid(form)
 
 
@@ -80,22 +82,6 @@ class EditRecipeView(RecipeEditionCreateView):
             return redirect("/")
         this_recipe = recipe[0]
         form.instance.recipe = this_recipe
-        form.save()
-
-        number_of_ingredients = self.request.POST["number_of_ingredients"]
-        saved_ingredients = 0
-        ingredient_number = 1
-        while saved_ingredients < int(number_of_ingredients):
-            ingredient_line = self.request.POST \
-                .get("ingredient_line_" + str(ingredient_number), None)
-            if ingredient_line:
-                new_ingredient_line = IngredientLine.objects.create(
-                    text=ingredient_line
-                )
-                form.instance.ingredient_lines.add(new_ingredient_line)
-                saved_ingredients += 1
-            ingredient_number += 1
-
         return super().form_valid(form)
 
     def get_initial(self):
