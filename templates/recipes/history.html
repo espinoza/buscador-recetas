@@ -9,24 +9,22 @@
 
 <main class="container">
 
-    <h1>Historial de ediciones de {{last_edition.title}}</h1>
-    <p>Creado por
-        <a href="{% url 'profile' last_edition.recipe.author.username %}">
-            {{ last_edition.recipe.author.get_full_name }}
-        </a>
-    </p>
+  <h1>Historial de ediciones de {{last_edition.title}}</h1>
+  <p>Creado por
+    <a href="{% url 'profile' last_edition.recipe.author.username %}">
+      {{ last_edition.recipe.author.get_full_name }}
+    </a>
+  </p>
 
-    {% for edition in editions.all %}
-        <ul>
-            <li>
-                {% with r_id=edition.recipe.id e_id=edition.id%}
-                    <a href="{% url 'recipe_history_item' r_id e_id %}">
-                        {{edition.created_at}}
-                    </a>
-                {% endwith %}
-            </li>
-        </ul>
-    {% endfor %}
+  {% for edition in editions.all %}
+    <ul>
+      <li>
+        <a href="{% url 'recipe_history_item' edition.recipe.id edition.id %}">
+          {{edition.created_at}}
+        </a>
+      </li>
+    </ul>
+  {% endfor %}
 
 </main>
 
