@@ -3,7 +3,7 @@ from django.views.generic import ListView, FormView, View
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.recipes.models import Recipe
 from django.db.models import Q
-from apps.search.forms import SearchButtonForm
+from apps.search.forms import SearchByIngredientsButtonForm, SearchByNameForm
 
 
 class ExploreRecipesListView(ListView):
@@ -68,13 +68,14 @@ class SearchByIngredientView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["button_form"] = SearchButtonForm()
+        context["by_ingredients_button_form"] = SearchByIngredientsButtonForm()
+        context["by_name_form"] = SearchByNameForm()
         return context
 
 
 class SearchButtonView(FormView):
     http_method_names = ['post']
-    form_class = SearchButtonForm
+    form_class = SearchByIngredientsButtonForm
 
     def form_valid(self, form):
         search_mode = form.cleaned_data.get("search_mode")

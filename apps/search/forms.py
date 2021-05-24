@@ -2,7 +2,7 @@ from django import forms
 import re
 
 
-class SearchButtonForm(forms.Form):
+class SearchByIngredientsButtonForm(forms.Form):
 
     include_ingredient_names = forms.CharField(
         required=False,
@@ -52,3 +52,22 @@ class SearchButtonForm(forms.Form):
                 "Problema al realizar la búsqueda"
             )
         return cleaned_data
+
+
+class SearchByNameForm(forms.Form):
+
+    recipe_name = forms.CharField(required=True)
+
+    def clean_recipe_name(self):
+        recipe_name = self.cleaned_data.get("recipe_name")
+        if len(recipe_name) == 0:
+            raise forms.ValidationError(
+                "Ingresa una o más palabras"
+            )
+        RE_RECIPE_NAME = re.compile(r'^[A-Za-z_ÑñÁáÉéÍíÓóÚúÜü ]+$')
+        if not RE_RECIPE_NAME.match(recipe_name):
+            raise forms.ValidationError(
+                "Nombre de receta no válido"
+            )
+        return recipe_name
+

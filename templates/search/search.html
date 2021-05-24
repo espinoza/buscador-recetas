@@ -16,29 +16,78 @@
 
 <main class="container">
 
-    <h2 class="my-2">Escribe los ingredientes</h2>
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active"
+                    id="button-byIngredients"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-byIngredients"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-byIngredients"
+                    aria-selected="true">
+                Ingredientes
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    id="button-byName"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-byName"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-byName"
+                    aria-selected="false">
+                Nombre
+            </button>
+        </li>
+    </ul>
 
-    <div id="include-input-area"
-         class="tags-area container border my-2">
-        <input id="include-input"
-               class="ingredient-input border-0 shadow-none"
-               type="text"
-               name="include_ingredient_name">
+    <div class="tab-content" id="pills-tabContent">
+
+        <div class="tab-pane fade show active"
+             id="pills-byIngredients"
+             role="tabpanel"
+             aria-labelledby="button-byIngredients">
+            <h2 class="my-2">Escribe los ingredientes</h2>
+
+            <div id="include-input-area"
+                 class="tags-area container border my-2">
+                <input id="include-input"
+                       class="ingredient-input border-0 shadow-none"
+                       type="text"
+                       name="include_ingredient_name">
+            </div>
+
+            <div id="exclude-input-area"
+                 class="tags-area container border my-2">
+                <input id="exclude-input"
+                       class="ingredient-input border-0 shadow-none"
+                       type="text"
+                       name="exclude_ingredient_name">
+            </div>
+
+            <form action="{% url 'do_search_by_ingredients' %}"
+                  method="post">
+                {% csrf_token %}
+                {{ by_ingredients_button_form | crispy }}
+                <input class="btn btn-success" type="submit" value="Buscar">
+            </form>
+        </div>
+
+        <div class="tab-pane fade"
+             id="pills-byName"
+             role="tabpanel"
+             aria-labelledby="button-byName">
+            <form action="{% url 'do_search_by_name' %}"
+                  method="post">
+                {% csrf_token %}
+                {{ by_name_form | crispy }}
+                <input class="btn btn-success" type="submit" value="Buscar">
+            </form>
+        </div>
     </div>
 
-    <div id="exclude-input-area"
-         class="tags-area container border my-2">
-        <input id="exclude-input"
-               class="ingredient-input border-0 shadow-none"
-               type="text"
-               name="exclude_ingredient_name">
-    </div>
-
-    <form action="{% url 'do_search_by_ingredients' %}" method="post">
-        {% csrf_token %}
-        {{ button_form }}
-        <input class="btn btn-success" type="submit" value="Buscar">
-    </form>
 
     {% if recipes %}
 
