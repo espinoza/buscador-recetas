@@ -51,16 +51,16 @@
                type="text" name="exclude_ingredient_name">
       </div>
 
-      <form action="{% url 'do_search_by_ingredients' %}" method="post">
+      <form action="{% url 'search_by_ingredients' %}" method="post">
         {% csrf_token %}
-        {{ by_ingredients_button_form | crispy }}
+        {{ by_ingredients_form | crispy }}
         <input class="btn btn-success" type="submit" value="Buscar">
       </form>
     </div>
 
     <div class="tab-pane fade" id="pills-byName"
          role="tabpanel" aria-labelledby="button-byName">
-      <form action="{% url 'do_search_by_name' %}" method="post">
+      <form action="{% url 'search_by_name' %}" method="post">
         {% csrf_token %}
         {{ by_name_form | crispy }}
         <input class="btn btn-success" type="submit" value="Buscar">

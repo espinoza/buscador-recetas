@@ -3,7 +3,7 @@ from django.views.generic import ListView, FormView, View
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.recipes.models import Recipe
 from django.db.models import Q
-from apps.search.forms import SearchByIngredientsButtonForm, SearchByNameForm
+from apps.search.forms import SearchByIngredientsForm, SearchByNameForm
 
 
 class ExploreRecipesListView(ListView):
@@ -11,17 +11,38 @@ class ExploreRecipesListView(ListView):
     template_name = "search/search.html"
     context_object_name = "recipes"
 
-class SearchByIngredientView(ListView):
+class SearchListView(ListView):
     model = Recipe
     template_name = "search/search.html"
     context_object_name = "recipes"
+    queryset = []
 
-    def get_queryset(self, **kwargs):
-        include_ingredient_names = self.request.GET.get("include", "") \
-            .strip(",").split(",")
-        exclude_ingredient_names = self.request.GET.get("exclude", "") \
-            .strip(",").split(",")
-        search_mode = self.request.GET.get("mode", "")
+    def post(self, request, *args, **kwargs):
+        self.object_list = self.queryset
+        context = self.get_context_data()
+        if "search_mode" in request.POST:
+            context["by_ingredients_form"] = SearchByIngredientsForm(request.POST)
+        elif "recipe_name" in request.POST:
+            context["by_name_form"] = SearchByNameForm(request.POST)
+        return self.render_to_response(context, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["by_ingredients_form"] = SearchByIngredientsForm()
+        context["by_name_form"] = SearchByNameForm()
+        return context
+
+
+class SearchByIngredientsView(FormView):
+    http_method_names = ['post']
+    form_class = SearchByIngredientsForm
+
+    def form_valid(self, form):
+        search_mode = form.cleaned_data.get("search_mode")
+        include_ingredient_names = form.cleaned_data \
+            .get("include_ingredient_names").strip(",").split(",")
+        exclude_ingredient_names = form.cleaned_data \
+            .get("exclude_ingredient_names").strip(",").split(",")
 
         include_ingredient_names_db = IngredientName.objects.filter(
             Q(singular__in=include_ingredient_names)
@@ -64,34 +85,18 @@ class SearchByIngredientView(ListView):
         else:
             recipes = Recipe.objects.none()
 
-        return recipes
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["by_ingredients_button_form"] = SearchByIngredientsButtonForm()
-        context["by_name_form"] = SearchByNameForm()
-        return context
-
-
-class SearchButtonView(FormView):
-    http_method_names = ['post']
-    form_class = SearchByIngredientsButtonForm
-
-    def form_valid(self, form):
-        search_mode = form.cleaned_data.get("search_mode")
-        include_names = form.cleaned_data.get("include_ingredient_names")
-        exclude_names = form.cleaned_data.get("exclude_ingredient_names")
-        self.success_url = "/search/?mode=" + search_mode \
-                           + "&include=" + include_names \
-                           + "&exclude=" + exclude_names
-        return super().form_valid(form)
+        return SearchListView.as_view(queryset=recipes)(self.request)
 
     def form_invalid(self, form):
+        return SearchListView.as_view()(self.request)
+
+
+class SearchByNameView(FormView):
+    http_method_names = ['post']
+    form_class = SearchByNameForm
+    
+    def form_valid(self, form):
         return redirect("/search")
 
-
-class SearchByNameButtonView(View):
-    http_method_names = ['post']
-    
-    def post(self, request, *args, **kwargs):
+    def form_invalid(self, form):
         return redirect("/search")

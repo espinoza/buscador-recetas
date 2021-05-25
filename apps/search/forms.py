@@ -2,7 +2,7 @@ from django import forms
 import re
 
 
-class SearchByIngredientsButtonForm(forms.Form):
+class SearchByIngredientsForm(forms.Form):
 
     include_ingredient_names = forms.CharField(
         required=False,
@@ -33,11 +33,8 @@ class SearchByIngredientsButtonForm(forms.Form):
         ],
     )
 
-    class Meta:
-        fields = []
-
     def clean(self):
-        cleaned_data = super(SearchButtonForm, self).clean()
+        cleaned_data = super().clean()
         include_ingredient_names = cleaned_data.get("include_ingredient_names")
         exclude_ingredient_names = cleaned_data.get("exclude_ingredient_names")
         RE_INGREDIENTS = re.compile(r'^[A-Za-z_ÑñÁáÉéÍíÓóÚúÜü ,]+$')

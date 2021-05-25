@@ -10,7 +10,7 @@ class SourceUrlForm(forms.Form):
     )
 
     def clean(self):
-        cleaned_data = super(SourceUrlForm, self).clean()
+        cleaned_data = super().clean()
         source_url = cleaned_data.get("source_url")
         parsed_url = urlparse(source_url)
         host = Host.objects.filter(url_scheme=parsed_url.scheme) \
