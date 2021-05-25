@@ -2,7 +2,17 @@ from django import forms
 import re
 
 
-class SearchByIngredientsForm(forms.Form):
+class SearchForm(forms.Form):
+
+    ingredient_restriction = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+        label="Solo tengo estos ingredientes",
+    )
 
     include_ingredient_names = forms.CharField(
         required=False,
@@ -24,13 +34,14 @@ class SearchByIngredientsForm(forms.Form):
         )
     )
 
-    search_mode = forms.ChoiceField(
-        widget=forms.RadioSelect,
-        label="Buscar recetas que contengan",
-        choices=[
-            ("soft", "al menos estos ingredientes"),
-            ("hard", "a lo más estos ingredientes"),
-        ],
+    recipe_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+        label="Nombre de la receta",
     )
 
     def clean(self):
@@ -43,25 +54,11 @@ class SearchByIngredientsForm(forms.Form):
             raise forms.ValidationError(
                 "Hay un nombre de ingrediente no válido"
             )
-        search_mode = cleaned_data.get("search_mode")
-        if search_mode not in ("soft", "hard"):
-            raise forms.ValidationError(
-                "Problema al realizar la búsqueda"
-            )
         return cleaned_data
-
-
-class SearchByNameForm(forms.Form):
-
-    recipe_name = forms.CharField(required=True)
 
     def clean_recipe_name(self):
         recipe_name = self.cleaned_data.get("recipe_name")
-        if len(recipe_name) == 0:
-            raise forms.ValidationError(
-                "Ingresa una o más palabras"
-            )
-        RE_RECIPE_NAME = re.compile(r'^[A-Za-z_ÑñÁáÉéÍíÓóÚúÜü ]+$')
+        RE_RECIPE_NAME = re.compile(r'^[A-Za-z_ÑñÁáÉéÍíÓóÚúÜü ]*$')
         if not RE_RECIPE_NAME.match(recipe_name):
             raise forms.ValidationError(
                 "Nombre de receta no válido"

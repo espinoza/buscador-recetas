@@ -3,13 +3,9 @@ from . import views
 
 urlpatterns = [
 
-    path('by_ingredients',
-         views.SearchByIngredientsView.as_view(),
-         name="search_by_ingredients"),
-
-    path('by_name',
-         views.SearchByNameView.as_view(),
-         name='search_by_name'),
+    path('do',
+         views.SearchView.as_view(),
+         name='do_search'),
 
     path('explore',
          views.ExploreRecipesListView.as_view(),

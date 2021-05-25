@@ -3,7 +3,7 @@ from django.views.generic import ListView, FormView, View
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.recipes.models import Recipe
 from django.db.models import Q
-from apps.search.forms import SearchByIngredientsForm, SearchByNameForm
+from apps.search.forms import SearchForm
 
 
 class ExploreRecipesListView(ListView):
@@ -20,25 +20,22 @@ class SearchListView(ListView):
     def post(self, request, *args, **kwargs):
         self.object_list = self.queryset
         context = self.get_context_data()
-        if "search_mode" in request.POST:
-            context["by_ingredients_form"] = SearchByIngredientsForm(request.POST)
-        elif "recipe_name" in request.POST:
-            context["by_name_form"] = SearchByNameForm(request.POST)
+        context["form"] = SearchForm(request.POST)
         return self.render_to_response(context, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["by_ingredients_form"] = SearchByIngredientsForm()
-        context["by_name_form"] = SearchByNameForm()
+        context["form"] = SearchForm()
         return context
 
 
-class SearchByIngredientsView(FormView):
+class SearchView(FormView):
     http_method_names = ['post']
-    form_class = SearchByIngredientsForm
+    form_class = SearchForm
 
     def form_valid(self, form):
-        search_mode = form.cleaned_data.get("search_mode")
+        ingredient_restriction = form.cleaned_data \
+            .get("ingredient_restriction")
         include_ingredient_names = form.cleaned_data \
             .get("include_ingredient_names").strip(",").split(",")
         exclude_ingredient_names = form.cleaned_data \
@@ -56,7 +53,7 @@ class SearchByIngredientsView(FormView):
 
         if include_ingredient_names_db or exclude_ingredient_names_db:
 
-            if search_mode == "soft":
+            if not ingredient_restriction:
                 ingredients = Ingredient.objects.filter(
                     names__in=include_ingredient_names_db
                 )
@@ -65,7 +62,7 @@ class SearchByIngredientsView(FormView):
                         Recipe.objects.filter(ingredients=ingredient)
                     )
 
-            if search_mode == "hard":
+            if ingredient_restriction:
                 non_ingredients = Ingredient.objects.exclude(
                     names__in=include_ingredient_names_db
                 )
@@ -89,14 +86,3 @@ class SearchByIngredientsView(FormView):
 
     def form_invalid(self, form):
         return SearchListView.as_view()(self.request)
-
-
-class SearchByNameView(FormView):
-    http_method_names = ['post']
-    form_class = SearchByNameForm
-    
-    def form_valid(self, form):
-        return redirect("/search")
-
-    def form_invalid(self, form):
-        return redirect("/search")
