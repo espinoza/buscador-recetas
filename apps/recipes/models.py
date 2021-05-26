@@ -13,6 +13,13 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def name(self):
+        if self.editions:
+            return self.editions.order_by("created_at").last().title
+        else:
+            return ""
+
 
 class RecipeEdition(models.Model):
     title = models.CharField(max_length=255)
