@@ -11,7 +11,7 @@ import re
 class CheckRecipeIngredientsView(FormView):
 
     form_class = AddIngredientForm
-    template_name = "ingredients/check_recipe.html"
+    template_name = "ingredients/check-recipe.html"
 
     def get_context_data(self, **kwargs):
         recipe = Recipe.objects.filter(id=self.kwargs['recipe_id'])

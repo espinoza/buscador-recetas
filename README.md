@@ -3,8 +3,9 @@
 Aplicación web para buscar recetas a partir de sus ingredientes.
 
 ## Requisitos
-* Python3
-* PostgreSQL
+* `Python3`
+* `PostgreSQL`
+* `Node.js` con `Node-Sass`
 
 ## Instalación
 
@@ -37,7 +38,8 @@ Generalmente, el nombre de usuario por defecto es `postgres`.
 CREATE DATABASE nombre_base_de_datos;
 \q
 ```
-reemplazando `nombre_base_de_datos` con el nombre deseado para la base de datos.
+reemplazando `nombre_base_de_datos` con el nombre deseado para
+la base de datos.
 
 
 6. Crear el archivo `config.env` con el siguiente contenido:
@@ -47,8 +49,8 @@ DB_NAME=nombre_base_de_datos
 DB_USER=usuario_postgresql
 DB_PASSWORD=contraseña_postgresql
 ```
-reemplazando `nombre_base_de_datos`, `usuario_postgresql` y `contraseña_postgresql`
-con sus valores correspondientes.
+reemplazando `nombre_base_de_datos`, `usuario_postgresql`
+y `contraseña_postgresql` con sus valores correspondientes.
 
 
 7. Migrar base de datos:
@@ -56,10 +58,17 @@ con sus valores correspondientes.
 python manage.py migrate
 ```
 
-8. Iniciar servidor:
+
+8. Compilar archivos CSS a partir de SCSS:
+```
+node-sass assets/scss -o static/css
+```
+
+
+9. Iniciar servidor:
 ```
 python manage.py runserver
 ```
 
-Se puede acceder a la aplicación a través de un navegador web, utilizando la
-dirección `http://localhost:8000`.
+Se puede acceder a la aplicación a través de un navegador web,
+utilizando la dirección `http://localhost:8000`.
