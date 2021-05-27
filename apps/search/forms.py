@@ -38,7 +38,7 @@ class SearchForm(forms.Form):
         required=False,
         widget=forms.TextInput(
             attrs={
-                "class": "form-control",
+                "placeholder": "Filtrar por nombre de receta",
             }
         ),
         label="Nombre de la receta",

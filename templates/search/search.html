@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 
-{% block style %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'search/style.css' %}">
-{% endblock %}
 
 {% block title %}
 <title>¡Busca tus recetas!</title>
@@ -16,38 +12,33 @@
 
 <main class="container">
 
-    <form action="{% url 'do_search' %}" method="post">
-      {% csrf_token %}
+  <h3 class="bright-title">El buscador de sabores</h3>
 
-      <div class="form-control">
+  <form class="main-search-form" action="{% url 'do_search' %}" method="post">
+    {% csrf_token %}
 
-        <div class="form-check form-switch">
-          {{ form.ingredient_restriction.label }}
-          {{ form.ingredient_restriction }}
-        </div>
-        
-        <div id="include-input-area" class="tags-area container border my-2">
-          <input id="include-input" class="ingredient-input shadow-none"
-                 type="text" name="include_ingredient_name">
-        </div>
-        {{ form.include_ingredient_names }}
-        
-        <div id="exclude-input-area" class="tags-area container border my-2">
-          <input id="exclude-input" class="ingredient-input shadow-none"
-               type="text" name="exclude_ingredient_name">
-        </div>
-        {{ form.exclude_ingredient_names }}
+    <div class="form-check form-switch">
+      {{ form.ingredient_restriction.label }}
+      {{ form.ingredient_restriction }}
+    </div>
+    
+    <div id="include-input-area" class="tags-area container mt-2">
+      <input id="include-input" class="ingredient-input shadow-none"
+             type="text" name="include_ingredient_name">
+    </div>
+    {{ form.include_ingredient_names }}
+    
+    <div id="exclude-input-area" class="tags-area container mt-2 mb-2">
+      <input id="exclude-input" class="ingredient-input shadow-none"
+           type="text" name="exclude_ingredient_name">
+    </div>
+    {{ form.exclude_ingredient_names }}
 
-      </div>
+    {{ form.recipe_name }}
 
-      <div class="form-control">
-        {{ form.recipe_name.label }}
-        {{ form.recipe_name }}
-      </div>
+    <input class="bright-button mt-3" type="submit" value="BUSCAR RECETAS">
 
-      <input class="btn btn-success" type="submit" value="Buscar">
-
-    </form>
+  </form>
 
 
   {% if recipes %}

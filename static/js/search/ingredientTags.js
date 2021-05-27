@@ -9,7 +9,7 @@ $(document).ready(function () {
       let commaPosition = inputValue.indexOf(",");
       inputValue = $(this).val().slice(0, commaPosition);
       $(this).val("");
-      let tag = "<span class='badge mx-1'>"
+      let tag = "<span class='badge'>"
                 + inputValue + "</span>";
       $(this).before(tag);
       if ($(this).attr("id") == "include-input") {

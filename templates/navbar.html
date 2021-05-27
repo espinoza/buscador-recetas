@@ -1,23 +1,25 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<nav class="navbar navbar-expand-sm navbar-light">
 
   <div class="container-fluid">
 
-    <h3 class="navbar-brand">
-      <a class="nav-link" href="{% url 'index' %}">Recetas</a>
+    <h3>
+      <a href="{% url 'index' %}">Sabropedia</a>
     </h3>
 
     <button class="navbar-toggler" type="button"
             data-bs-toggle="collapse" data-bs-target="#navbarMenu"
             aria-controls="navbarMenu" aria-expanded="false"
             aria-label="Alternar navegación">
-      <span class="navbar-toggler-icon"></span>
+      <span class="line"></span> 
+      <span class="line"></span> 
+      <span class="line"></span>
     </button>
 
     <div class="navbar-nav collapse navbar-collapse" id="navbarMenu">
 
       <div class="dropdown">
 
-        <a class="nav-link dropdown-toggle" href="#" id="navbarUserMenu"
+        <a class="dropdown-toggle" href="#" id="navbarUserMenu"
            role="button" data-bs-toggle="dropdown" aria-expanded="false">
           Agregar receta
         </a>
@@ -37,7 +39,7 @@
 
       </div>
 
-      <a class="nav-link" href="{% url 'explore' %}">
+      <a href="{% url 'explore' %}">
         Explorar
       </a>
 
@@ -46,7 +48,7 @@
 
         {% if request.user.is_authenticated %}
 
-          <a class="nav-link dropdown-toggle" href="#" id="navbarUserMenu"
+          <a class="dropdown-toggle" href="#" id="navbarUserMenu"
              role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {{request.user.username}}
           </a>
