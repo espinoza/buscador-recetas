@@ -2,8 +2,13 @@
 
 {% load static %}
 
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+{% endblock %}
+
+
 {% block title %}
-<title>¡Busca tus recetas!</title>
+  <title>¡Busca tus recetas!</title>
 {% endblock %}
 
 {% block contents %}
@@ -42,35 +47,35 @@
 
 
   {% if recipes %}
-    {% for recipe in recipes %}
 
-      <div class="card my-4">
-
-        <div class="card-header">
-          <h5 class="card-title d-inline-block">
-            <a href="{% url 'view_recipe' recipe.id %}">
-              {{recipe.editions.last.title}}
-            </a>
-          </h5>
-          <span>
-            Creado por 
-            <a href="{% url 'profile' recipe.author.username %}">
-              {{recipe.author.get_full_name}}
-            </a>
-          </span>
+    <div class="row">
+      {% for recipe in recipes %}
+      
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="my-4 recipe-block">
+          
+            <div class="recipe-block-header">
+              <h5 class="d-inline-block recipe-block-title">
+                <a href="{% url 'view_recipe' recipe.id %}">
+                  {{recipe.editions.last.title}}
+                </a>
+              </h5>
+            </div>
+          
+            <div class="recipe-block-body">
+              {% for ingredient in recipe.ingredients.all %}
+                <span class="badge">
+                  {{ingredient.names.first.singular}}
+                </span>
+              {% endfor %}
+            </div>
+          
+          </div>
         </div>
+      
+      {% endfor %}
+    </div>
 
-        <div class="card-body">
-          {% for ingredient in recipe.ingredients.all %}
-            <span class="badge bg-secondary">
-              {{ingredient.names.first.singular}}
-            </span>
-          {% endfor %}
-        </div>
-
-      </div>
-
-    {% endfor %}
   {% endif %}
 
   <script src="{% static 'js/search/ingredientTags.js' %}"></script>

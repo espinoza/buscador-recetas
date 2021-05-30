@@ -1,0 +1,110 @@
+$primary-color: #763fcc;
+$primary-color-opacity: #c5afe9;
+$primary-color-alternative: #411b80;
+$secondary-color: #cc9554;
+$secondary-color-alternative: #9d6c2f;
+// $accent-color: #95d929;
+$accent-color: #2bcc4d;
+$accent-color-alternative: #218035;
+$text-color: #484848;
+$text-color-soft: #888888;
+$text-on-dark-color: white;
+
+body {
+  color: $text-color;
+}
+
+nav {
+  background-color: $primary-color;
+  a {
+    color: $text-on-dark-color;
+    text-decoration: none;
+    margin: auto 10px;
+    &:hover {
+      text-decoration: none;
+      color: $accent-color;
+    }
+  }
+  .navbar-toggler{
+    width: 47px;
+    height: 34px;
+    border: none;
+    .line{
+      width: 100%;
+      float: left;
+      height: 2px;
+      background-color: $text-on-dark-color;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+input[type=text] {
+  color: $primary-color;
+  width: 100%;
+  border: 1px solid $primary-color-opacity;
+  border-radius: 5px;
+  padding-left: 10px;
+  &:focus {
+    outline: 0;
+  }
+}
+
+.bright-title {
+  color: $accent-color;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.bright-button {
+  background-color: $accent-color;
+  color: $text-on-dark-color;
+  font-weight: bold;
+  border: none;
+  margin: 10px auto;
+  padding: 5px 20px;
+  border-radius: 5px;
+  &:hover {
+    @extend .bright-button;
+    background-color: $accent-color-alternative;
+  }
+}
+
+$recipe-border-radius: 5px;
+.recipe-block {
+  .recipe-block-header {
+    border-top-left-radius: $recipe-border-radius;
+    border-top-right-radius: $recipe-border-radius;
+    color: $text-color;
+    padding: 3px;
+    a {
+      text-decoration: none;
+      color: $text-color;
+    }
+  }
+  .recipe-block-body {
+    border-bottom-left-radius: $recipe-border-radius;
+    border-bottom-right-radius: $recipe-border-radius;
+    padding: 3px;
+    .badge {
+      border: solid 1px $text-color-soft;
+      color: $text-color-soft;
+    }
+  }
+  &:hover {
+    .recipe-block-header {
+      a {
+        text-decoration: none;
+        color: $primary-color;
+      }
+    }
+    .recipe-block-body {
+      .badge {
+        border: solid 1px $primary-color;
+        background-color: $primary-color;
+        color: $text-on-dark-color;
+      }
+    }
+  }
+}
+

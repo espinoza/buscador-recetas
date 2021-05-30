@@ -1,0 +1,34 @@
+@import 'master';
+
+.main-search-form {
+  margin: 10px auto;
+  max-width: 600px;
+  .bright-button {
+    width: 100%;
+  }
+}
+
+.tags-area {
+  @extend input[type=text];
+  padding-left: 6px;
+  .badge {
+    border: 1px solid $primary-color;
+    margin-right: 4px;
+  }
+}
+
+#include-input, #exclude-input {
+  width: 40px;
+  border: none;
+  padding-left: 4px;
+}
+
+#include-input-area .badge {
+  background-color: $primary-color;
+  color: $text-on-dark-color;
+}
+
+#exclude-input-area .badge {
+  background-color: $text-on-dark-color;
+  color: $primary-color;
+}
