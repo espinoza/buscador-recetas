@@ -8,12 +8,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
 
-class RecipeListView(ListView):
-    model = Recipe
-    template_name = "recipes/explore.html"
-    context_object_name = "recipes"
-
-
 class RecipeEditionCreateView(LoginRequiredMixin, CreateView):
     model = RecipeEdition
     fields = ['title', 'preparation_section']

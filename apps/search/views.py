@@ -6,11 +6,6 @@ from django.db.models import Q
 from apps.search.forms import SearchForm
 
 
-class ExploreRecipesListView(ListView):
-    model = Recipe
-    template_name = "search/search.html"
-    context_object_name = "recipes"
-
 class SearchListView(ListView):
     model = Recipe
     template_name = "search/search.html"
