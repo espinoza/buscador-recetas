@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth import get_user_model
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView
@@ -17,6 +17,10 @@ class UserLoginView(LoginView):
 
 class UserLogoutView(LogoutView):
     template_name = "users/logout.html"
+
+class UserPasswordChangeView(PasswordChangeView):
+    template_name = "users/password_change.html"
+    success_url = "/users/edit/"
 
 
 class ProfileDetailView(DetailView):

@@ -14,8 +14,9 @@
     <form method="post">
         {% csrf_token %}
         <p>{{ form | crispy }}</p>
-        <input class="btn btn-success mt-2" type="submit" value="Actualizar">
+        <input class="btn btn-success mt-2 mb-3" type="submit" value="Actualizar">
     </form>
+    <a href="{% url 'password_change' %}">Cambiar contraseña</a>
 
 </main>
 
