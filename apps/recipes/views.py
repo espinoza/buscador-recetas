@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from django.views.generic import FormView, ListView, DetailView
+from django.views.generic import FormView, DetailView
 from apps.recipes.models import Recipe, RecipeEdition
 from apps.recipes.forms import SourceUrlForm
 from apps.scraper.models import Source
@@ -22,25 +22,6 @@ class RecipeDetailView(DetailView):
                 return edition[0]
         recipe_editions = this_recipe.editions.all().order_by("created_at")
         return recipe_editions.last()
-
-
-class RecipeHistoryListView(ListView):
-    model = RecipeEdition
-    template_name = "recipes/history.html"
-    context_object_name = "editions"
-
-    def get_queryset(self):
-        recipe_id = self.kwargs["recipe_id"]
-        recipe = Recipe.objects.filter(id=recipe_id)
-        if not recipe:
-            return redirect("/")
-        this_recipe = recipe[0]
-        return this_recipe.editions
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["last_edition"] = self.get_queryset().last()
-        return context
 
 
 class InsertSourceFormView(FormView):
