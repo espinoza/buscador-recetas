@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.views.generic import FormView, CreateView
 from apps.recipes.models import Recipe
 from apps.ingredients.models import Ingredient, IngredientName
@@ -18,14 +18,12 @@ class CheckRecipeIngredientsView(FormView):
         if not recipe:
             return redirect("/")
         this_recipe = recipe[0]
-        recipe_editions = this_recipe.editions.all().order_by("created_at")
-        last_edition = recipe_editions.last()
-        detect_ingredients(this_recipe, last_edition)
+        detect_ingredients(this_recipe)
         context = super().get_context_data(**kwargs)
         context["ingredients"] = this_recipe.ingredients
-        context["ingredient_lines"] = last_edition.ingredient_lines.all()
+        context["ingredient_lines"] = this_recipe.ingredient_lines.all()
         context["recipe_id"] = this_recipe.id
-        context["recipe_title"] = last_edition.title
+        context["recipe_title"] = this_recipe.title
         return context
 
     def form_valid(self, form):
@@ -34,11 +32,9 @@ class CheckRecipeIngredientsView(FormView):
             return redirect("/")
         this_recipe = recipe[0]
 
-        recipe_editions = this_recipe.editions.all().order_by("created_at")
-        last_edition = recipe_editions.last()
         new_ingredient_on_recipe = form.cleaned_data.get("new_ingredient")
         if not any(new_ingredient_on_recipe in ingredient_line.text
-                   for ingredient_line in last_edition.ingredient_lines.all()):
+                   for ingredient_line in this_recipe.ingredient_lines.all()):
             return redirect("/")
 
         names_found = IngredientName.objects.filter(
@@ -84,11 +80,9 @@ class AddNewIngredientToRecipeView(CreateView):
                             kwargs={"recipe_id": recipe_id})
 
 
-def detect_ingredients(recipe, recipe_edition):
-    if recipe_edition.recipe is not recipe:
-        return None
+def detect_ingredients(recipe):
     special_characters = ",.;:¡!¿?()/"
-    for ingredient_line in recipe_edition.ingredient_lines.all():
+    for ingredient_line in recipe.ingredient_lines.all():
         line = ingredient_line.text.lower()
         for char in special_characters:
             line.replace(char, "&")

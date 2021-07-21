@@ -9,17 +9,12 @@
 
 <main class="container justify-content-center">
 
-  <h1>{{edition.title}}</h1>
-  <p>Creado por
-    <a href="{% url 'profile' edition.recipe.author.username %}">
-      {{ edition.recipe.author.get_full_name }}
-    </a>
-  </p>
+  <h1>{{recipe.title}}</h1>
 
   <h4>Ingredientes:</h4>
 
   <ul>
-    {% for ingredient_line in edition.ingredient_lines.all %}
+    {% for ingredient_line in recipe.ingredient_lines.all %}
       <li>{{ ingredient_line.text }}</li>
     {% empty %}
       <p>No existen especificaciones de ingredientes para esta receta.</p>
@@ -27,7 +22,7 @@
   </ul>
 
   <h4>Preparación:</h4>
-  <p>{{ edition.preparation_section | linebreaks }}</p>
+  <p>{{ recipe.preparation_section | linebreaks }}</p>
 
 </main>
 

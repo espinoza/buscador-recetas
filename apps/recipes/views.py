@@ -1,27 +1,21 @@
 from django.shortcuts import redirect
 from django.views.generic import FormView, DetailView
-from apps.recipes.models import Recipe, RecipeEdition
+from apps.recipes.models import Recipe
 from apps.recipes.forms import SourceUrlForm
 from apps.scraper.models import Source
 
 
 class RecipeDetailView(DetailView):
-    model = RecipeEdition
+    model = Recipe
     template_name = "recipes/view.html"
-    context_object_name = "edition"
+    context_object_name = "recipe"
 
     def get_object(self):
         recipe = Recipe.objects.filter(id=self.kwargs["recipe_id"])
         if not recipe:
             return redirect("/")
         this_recipe = recipe[0]
-        edition_id = self.kwargs.get("edition_id", None)
-        if edition_id:
-            edition = RecipeEdition.objects.filter(id=edition_id)
-            if edition:
-                return edition[0]
-        recipe_editions = this_recipe.editions.all().order_by("created_at")
-        return recipe_editions.last()
+        return this_recipe
 
 
 class InsertSourceFormView(FormView):

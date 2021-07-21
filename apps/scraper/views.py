@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from urllib.parse import urlparse
 from apps.scraper.models import Host, Source
-from apps.recipes.models import Recipe, RecipeEdition, IngredientLine
+from apps.recipes.models import Recipe, IngredientLine
 from bs4 import BeautifulSoup
 import requests
 
@@ -21,18 +21,16 @@ def pre_scraper(request):
     scraper = eval(scraper_function_name)
     title, ingredient_lines, preparation_section = scraper(soup)
 
-    new_recipe = Recipe.objects.create(author=request.user)
-    new_recipe_edition = RecipeEdition.objects.create(
+    new_recipe = Recipe.objects.create(
         title=title,
-        author=request.user,
         preparation_section=preparation_section,
-        recipe=new_recipe,
+
     )
     for ingredient_line in ingredient_lines:
         new_ingredient_line = IngredientLine.objects.create(
             text=ingredient_line
         )
-        new_recipe_edition.ingredient_lines.add(new_ingredient_line)
+        new_recipe.ingredient_lines.add(new_ingredient_line)
 
     return redirect('check_recipe_ingredients', recipe_id=new_recipe.id)
 
