@@ -17,24 +17,26 @@ class CheckRecipeIngredientsView(FormView):
         recipe = Recipe.objects.filter(id=self.kwargs['recipe_id'])
         if not recipe:
             return redirect("/")
-        this_recipe = recipe[0]
-        detect_ingredients(this_recipe)
+        recipe = recipe[0]
+        detect_ingredients(recipe)
         context = super().get_context_data(**kwargs)
-        context["ingredients"] = this_recipe.ingredients
-        context["ingredient_lines"] = this_recipe.ingredient_lines.all()
-        context["recipe_id"] = this_recipe.id
-        context["recipe_title"] = this_recipe.title
+        context.update({
+            "ingredients": recipe.ingredients,
+            "ingredient_lines": recipe.ingredient_lines.all(),
+            "recipe_id": recipe.id,
+            "recipe_title": recipe.title,
+        })
         return context
 
     def form_valid(self, form):
         recipe = Recipe.objects.filter(id=self.kwargs['recipe_id'])
         if not recipe:
             return redirect("/")
-        this_recipe = recipe[0]
+        recipe = recipe[0]
 
         new_ingredient_on_recipe = form.cleaned_data.get("new_ingredient")
         if not any(new_ingredient_on_recipe in ingredient_line.text
-                   for ingredient_line in this_recipe.ingredient_lines.all()):
+                   for ingredient_line in recipe.ingredient_lines.all()):
             return redirect("/")
 
         names_found = IngredientName.objects.filter(
@@ -42,9 +44,14 @@ class CheckRecipeIngredientsView(FormView):
             | Q(plural=new_ingredient_on_recipe)
         )
         if names_found:
-            this_recipe.ingredients.add(names_found[0].ingredient)
+            recipe.ingredients.add(names_found[0].ingredient)
         else:
-            create_ingredient_form = CreateIngredientForm()
+            create_ingredient_form = CreateIngredientForm(
+                initial={
+                    "singular": new_ingredient_on_recipe.lower(),
+                    "plural": new_ingredient_on_recipe.lower(),
+                }
+            )
             return self.render_to_response(
                 self.get_context_data(
                     create_ingredient_form=create_ingredient_form)
@@ -58,7 +65,10 @@ class CheckRecipeIngredientsView(FormView):
                             kwargs={"recipe_id": recipe_id})
 
 
-class AddNewIngredientToRecipeView(CreateView):
+class AddNewIngredientView(CreateView):
+    """A view to recive a post request to add a new ingredient when it
+    is not detected in any ingredient line of the recipe.
+    """
     http_method_names = ['post']
     model = IngredientName
     fields = ['singular', 'plural']

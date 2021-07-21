@@ -6,6 +6,9 @@ from apps.scraper.models import Source
 
 
 class InsertSourceFormView(FormView):
+    """A view dedicated to a form where source can be inserted to get
+    the recipe.
+    """
     form_class = SourceUrlForm
     template_name = "recipes/source.html"
 

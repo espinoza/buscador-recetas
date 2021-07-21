@@ -12,9 +12,6 @@ class AddIngredientForm(forms.Form):
         )
     )
 
-    class Meta:
-        fields = []
-
     def clean_new_ingredient(self):
         new_ingredient = self.cleaned_data.get("new_ingredient")
         if not all(char.isalpha() or char.isspace()
