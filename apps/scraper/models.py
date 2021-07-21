@@ -14,12 +14,20 @@ class Host(models.Model):
     def url(self):
         return self.url_scheme + "://" + self.url_netloc
 
+    @property
+    def scraper_function_name(self):
+        return self.name.lower().replace(" ", "_") + "_scraper"
+
+    @property
+    def get_sources_function_name(self):
+        return self.name.lower().replace(" ", "_") + "_get_sources"
+
 
 class Source(models.Model):
     host = models.ForeignKey(to=Host,
                              on_delete=models.CASCADE,
                              related_name="sources")
-    url_path = models.CharField(max_length=255)
+    url_path = models.CharField(max_length=255, unique=True)
     clicks = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

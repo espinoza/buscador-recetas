@@ -2,5 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.pre_scraper)
+    path('/get_sources', views.get_sources, name="get_sources"),
+    path('', views.pre_scraper),
 ]
