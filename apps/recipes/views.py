@@ -5,19 +5,6 @@ from apps.recipes.forms import SourceUrlForm
 from apps.scraper.models import Source
 
 
-class RecipeDetailView(DetailView):
-    model = Recipe
-    template_name = "recipes/view.html"
-    context_object_name = "recipe"
-
-    def get_object(self):
-        recipe = Recipe.objects.filter(id=self.kwargs["recipe_id"])
-        if not recipe:
-            return redirect("/")
-        this_recipe = recipe[0]
-        return this_recipe
-
-
 class InsertSourceFormView(FormView):
     form_class = SourceUrlForm
     template_name = "recipes/source.html"

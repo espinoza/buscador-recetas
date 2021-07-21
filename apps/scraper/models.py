@@ -8,7 +8,7 @@ class Host(models.Model):
     url_netloc = models.CharField(max_length=255)
     available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def url(self):
@@ -22,7 +22,7 @@ class Source(models.Model):
     url_path = models.CharField(max_length=255)
     clicks = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     recipe = models.OneToOneField(to=Recipe,
                                   null=True,
                                   on_delete=models.SET_NULL,

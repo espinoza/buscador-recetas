@@ -32,6 +32,8 @@ def pre_scraper(request):
         )
         new_recipe.ingredient_lines.add(new_ingredient_line)
 
+    Source.objects.create(host=host, url_path=source_url, recipe=new_recipe)
+
     return redirect('check_recipe_ingredients', recipe_id=new_recipe.id)
 
 
@@ -46,10 +48,6 @@ def recetas_gratis_scraper(soup):
     preparation_div_items = soup.find_all(class_="apartado")
     instructions = [div.text.strip("\n")
                     for div in preparation_div_items]
-    excluded_phrases = ["Si te ha gustado la receta", "Sube la foto de"]
-    real_instructions = [inst for inst in instructions
-                              if not any(inst.startswith(phrase)
-                                         for phrase in excluded_phrases)]
-    preparation_section = "\n\n".join(real_instructions)
+    preparation_section = "\n\n".join(instructions)
 
     return title, ingredient_lines, preparation_section

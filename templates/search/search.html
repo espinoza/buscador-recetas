@@ -56,7 +56,7 @@
           
             <div class="recipe-block-header">
               <h5 class="d-inline-block recipe-block-title">
-                <a href="{% url 'view_recipe' recipe.id %}">
+                <a href="{{ recipe.source.url_path }}">
                   {{recipe.title}}
                 </a>
               </h5>
