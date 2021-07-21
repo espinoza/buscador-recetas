@@ -19,10 +19,6 @@ urlpatterns = [
          views.UserRegistrationView.as_view(),
          name='registration'),
 
-    path('<str:username>/profile/',
-         views.ProfileDetailView.as_view(),
-         name='profile'),
-
     path('edit/',
          views.UserUpdateView.as_view(),
          name='edit_user'),

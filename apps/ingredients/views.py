@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
 from django.views.generic import FormView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.recipes.models import Recipe
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.ingredients.forms import AddIngredientForm, CreateIngredientForm
@@ -8,10 +9,15 @@ from django.db.models import Q
 import re
 
 
-class CheckRecipeIngredientsView(FormView):
+class CheckRecipeIngredientsView(LoginRequiredMixin, FormView):
 
     form_class = AddIngredientForm
     template_name = "ingredients/check-recipe.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.level != 1:
+            return redirect("/")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         recipe = Recipe.objects.filter(id=self.kwargs['recipe_id'])
@@ -65,7 +71,7 @@ class CheckRecipeIngredientsView(FormView):
                             kwargs={"recipe_id": recipe_id})
 
 
-class AddNewIngredientView(CreateView):
+class AddNewIngredientView(LoginRequiredMixin, CreateView):
     """A view to recive a post request to add a new ingredient when it
     is not detected in any ingredient line of the recipe.
     """

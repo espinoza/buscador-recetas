@@ -18,9 +18,11 @@
 
     <div class="navbar-nav collapse navbar-collapse" id="navbarMenu">
 
-      <a class="nav-link" href="{% url 'insert_source' %}">
-        Agregar receta
-      </a>
+      {% if request.user.level == 1 %}
+        <a class="nav-link" href="{% url 'insert_source' %}">
+          Agregar receta
+        </a>
+      {% endif %}
 
       <div class="navbar-nav ms-auto dropdown">
 
