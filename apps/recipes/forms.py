@@ -1,6 +1,6 @@
 from django import forms
 from urllib.parse import urlparse
-from apps.scraper.models import Host, Source
+from apps.recipes.models import Host, Source
 
 
 class SourceUrlForm(forms.Form):

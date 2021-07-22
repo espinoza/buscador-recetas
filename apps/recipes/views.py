@@ -1,14 +1,15 @@
 from django.shortcuts import redirect
-from django.views.generic import FormView, DetailView
+from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from apps.recipes.models import Recipe
 from apps.recipes.forms import SourceUrlForm
-from apps.scraper.models import Source
+from apps.recipes.scraper import save_recipe_from_source
+from apps.recipes.source_finder import get_sources_for_all_hosts
 
 
-class InsertSourceFormView(LoginRequiredMixin, FormView):
-    """A view dedicated to a form where source can be inserted to get
-    the recipe.
+class UpdateRecipeDatabase(LoginRequiredMixin, FormView):
+    """A view dedicated to different options to update the recipe
+    database, including a form where a particular source can be inserted
+    to get the recipe.
     """
     form_class = SourceUrlForm
     template_name = "recipes/source.html"
@@ -21,3 +22,18 @@ class InsertSourceFormView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         source_url = form.cleaned_data["source_url"]
         return redirect(f"/scraper/?source_url={source_url}")
+
+
+def add_recipe_from_source(request):
+    if not request.user.is_authenticated or request.user.level != 1:
+        return redirect("/")
+    source_url = request.GET["source_url"]
+    new_recipe = save_recipe_from_source(source_url)
+    return redirect('check_recipe_ingredients', recipe_id=new_recipe.id)
+
+
+def get_sources(request):
+    if not request.user.is_authenticated or request.user.level != 1:
+        return redirect("/")
+    get_sources_for_all_hosts()
+    return redirect("update_recipe_database")

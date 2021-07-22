@@ -19,7 +19,7 @@
     <div class="navbar-nav collapse navbar-collapse" id="navbarMenu">
 
       {% if request.user.level == 1 %}
-        <a class="nav-link" href="{% url 'insert_source' %}">
+        <a class="nav-link" href="{% url 'update_recipe_database' %}">
           Agregar receta
         </a>
       {% endif %}

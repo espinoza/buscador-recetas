@@ -4,7 +4,14 @@ from . import views
 urlpatterns = [
 
     path('new/source/',
-         views.InsertSourceFormView.as_view(),
-         name='insert_source'),
+         views.UpdateRecipeDatabase.as_view(),
+         name='update_recipe_database'),
+
+    path('get_sources',
+         views.get_sources,
+         name="get_sources"),
+
+    path('',
+         views.add_recipe_from_source),
 
 ]
