@@ -11,6 +11,10 @@ urlpatterns = [
          views.get_sources,
          name="get_sources"),
 
+    path('get_recipes_from_sources',
+         views.get_recipes_from_sources,
+         name="get_recipes_from_sources"),
+
     path('',
          views.add_recipe_from_source),
 

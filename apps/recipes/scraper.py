@@ -1,7 +1,5 @@
 from apps.recipes.source_finder import save_source
-from django.shortcuts import redirect
-from urllib.parse import urlparse
-from apps.recipes.models import Recipe, IngredientLine, Host, Source
+from apps.recipes.models import Recipe, IngredientLine
 from bs4 import BeautifulSoup
 import requests
 
@@ -25,7 +23,10 @@ def save_recipe_from_source(source):
     if not title:
         return None
 
-    new_recipe = Recipe.objects.create(
+    if source.recipe:
+        recipe = source.recipe.delete()
+
+    recipe = Recipe.objects.create(
         title=title,
         preparation_section=preparation_section,
     )
@@ -33,11 +34,12 @@ def save_recipe_from_source(source):
         new_ingredient_line = IngredientLine.objects.create(
             text=ingredient_line
         )
-        new_recipe.ingredient_lines.add(new_ingredient_line)
+        recipe.ingredient_lines.add(new_ingredient_line)
 
-    source.recipe = new_recipe
+    source.recipe = recipe
+    source.save()
 
-    return new_recipe
+    return recipe
 
 
 def recetas_gratis_get_recipe_info(soup, source):
@@ -46,9 +48,9 @@ def recetas_gratis_get_recipe_info(soup, source):
             source.delete()
         return None, None, None
 
-    title_item = soup.find(class_="titulo")
-    start = len("Receta de ")
-    title = title_item.text[start:]
+    title_text = soup.find(class_="titulo titulo--articulo").text
+    start = 10 if "Receta de " in title_text else 0
+    title = title_text[start:]
 
     ingredient_li_items = soup.find_all(class_="ingrediente")
     ingredient_lines = [li.text.strip("\n") for li in ingredient_li_items]

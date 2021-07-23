@@ -60,7 +60,10 @@ def get_query_recipes(ingredient_restriction,
         Q(singular__in=exclude_ingredient_names)
         | Q(plural__in=exclude_ingredient_names)
     )
-    recipes = Recipe.objects.exclude(ingredients=None)
+    recipes = Recipe.objects.all()
+
+    if include_ingredient_names_db or ingredient_restriction:
+        recipes = Recipe.objects.exclude(ingredients=None)
 
     if include_ingredient_names_db or exclude_ingredient_names_db:
 

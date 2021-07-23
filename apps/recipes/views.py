@@ -1,8 +1,9 @@
 from django.shortcuts import redirect
 from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from apps.recipes.models import Source
 from apps.recipes.forms import SourceUrlForm
-from apps.recipes.scraper import save_recipe_from_url
+from apps.recipes.scraper import save_recipe_from_url, save_recipe_from_source
 from apps.recipes.source_finder import get_sources_for_all_hosts
 
 
@@ -38,4 +39,13 @@ def get_sources(request):
     if not request.user.is_authenticated or request.user.level != 1:
         return redirect("/")
     get_sources_for_all_hosts()
+    return redirect("update_recipe_database")
+
+
+def get_recipes_from_sources(request):
+    if not request.user.is_authenticated or request.user.level != 1:
+        return redirect("/")
+    sources = Source.objects.all()
+    for source in sources:
+        save_recipe_from_source(source)
     return redirect("update_recipe_database")
