@@ -1,3 +1,4 @@
+from apps.recipes.source_finder import save_source
 from django.shortcuts import redirect
 from urllib.parse import urlparse
 from apps.recipes.models import Recipe, IngredientLine, Host, Source
@@ -5,18 +6,24 @@ from bs4 import BeautifulSoup
 import requests
 
 
-def save_recipe_from_source(source_url):
-    parsed_url = urlparse(source_url)
-    host = Host.objects.filter(url_netloc=parsed_url.netloc)
-    if not host:
-        return redirect("/")
-    host = host[0]
+def save_recipe_from_url(url):
+    source = save_source(url)
+    recipe = save_recipe_from_source(source)
+    return recipe
 
-    page = requests.get(source_url)
+
+def save_recipe_from_source(source):
+    try:
+        page = requests.get(source.url)
+    except:
+        return None
+
     soup = BeautifulSoup(page.content, 'html.parser')
+    scraper = eval(source.host.get_recipe_info_function_name)
+    title, ingredient_lines, preparation_section = scraper(soup, source)
 
-    scraper = eval(host.scraper_function_name)
-    title, ingredient_lines, preparation_section = scraper(soup)
+    if not title:
+        return None
 
     new_recipe = Recipe.objects.create(
         title=title,
@@ -28,12 +35,17 @@ def save_recipe_from_source(source_url):
         )
         new_recipe.ingredient_lines.add(new_ingredient_line)
 
-    Source.objects.create(host=host, url_path=source_url, recipe=new_recipe)
+    source.recipe = new_recipe
 
     return new_recipe
 
 
-def recetas_gratis_get_recipe_info(soup):
+def recetas_gratis_get_recipe_info(soup, source):
+    if soup.find(class_="ctrl-error action-error"):
+        if source.clicks == 0:
+            source.delete()
+        return None, None, None
+
     title_item = soup.find(class_="titulo")
     start = len("Receta de ")
     title = title_item.text[start:]

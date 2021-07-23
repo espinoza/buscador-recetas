@@ -36,7 +36,7 @@ class Host(models.Model):
         return self.url_scheme + "://" + self.url_netloc
 
     @property
-    def scraper_function_name(self):
+    def get_recipe_info_function_name(self):
         return self.name.lower().replace(" ", "_") + "_get_recipe_info"
 
     @property
