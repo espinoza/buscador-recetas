@@ -61,7 +61,7 @@
                 </a>
               </h5>
             </div>
-          
+
             <div class="recipe-block-body">
               {% for ingredient in recipe.ingredients.all %}
                 <span class="badge">
@@ -69,6 +69,10 @@
                 </span>
               {% endfor %}
             </div>
+
+            <a href="{{ recipe.source.host.url }}" class="fs-6 my-1 text-secondary">
+              {{recipe.source.host.name}}
+            </a>
           
           </div>
         </div>
