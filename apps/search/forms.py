@@ -19,7 +19,6 @@ class SearchForm(forms.Form):
         widget=forms.HiddenInput(
             attrs={
                 "id": "include-ingredient-names",
-                "value": ",",
             }
         )
     )
@@ -29,7 +28,6 @@ class SearchForm(forms.Form):
         widget=forms.HiddenInput(
             attrs={
                 "id": "exclude-ingredient-names",
-                "value": ",",
             }
         )
     )
@@ -48,7 +46,7 @@ class SearchForm(forms.Form):
         cleaned_data = super().clean()
         include_ingredient_names = cleaned_data.get("include_ingredient_names")
         exclude_ingredient_names = cleaned_data.get("exclude_ingredient_names")
-        RE_INGREDIENTS = re.compile(r'^[A-Za-z_ÑñÁáÉéÍíÓóÚúÜü ,]+$')
+        RE_INGREDIENTS = re.compile(r'^[A-Za-z_ÑñÁáÉéÍíÓóÚúÜü ,]*$')
         if not (RE_INGREDIENTS.match(include_ingredient_names)
                 or RE_INGREDIENTS.match(exclude_ingredient_names)):
             raise forms.ValidationError(

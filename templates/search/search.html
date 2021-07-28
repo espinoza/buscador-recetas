@@ -19,7 +19,7 @@
 
   <h3 class="bright-title">El buscador de sabores</h3>
 
-  <form class="main-search-form" action="{% url 'do_search' %}" method="post">
+  <form class="main-search-form" method="post">
     {% csrf_token %}
 
     <div class="form-check form-switch">
@@ -75,6 +75,36 @@
       
       {% endfor %}
     </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+      <div class="pagination">
+        <span class="step-links">
+
+          {% if page_obj.has_previous %}
+            <a href="{{url_parameters}}page=1">
+              primera
+            </a>
+            <a href="{{url_parameters}}page={{page_obj.previous_page_number}}">
+              anterior
+            </a>
+          {% endif %}
+
+          <span class="current">
+            Página {{page_obj.number}} de {{page_obj.paginator.num_pages}}
+          </span>
+
+          {% if page_obj.has_next %}
+            <a href="{{url_parameters}}page={{page_obj.next_page_number}}">
+              siguiente
+            </a>
+            <a href="{{url_parameters}}page={{page_obj.paginator.num_pages}}">
+              última
+            </a>
+          {% endif %}
+
+        </span>
+      </div>
+    {% endif %}
 
   {% endif %}
 

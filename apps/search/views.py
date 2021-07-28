@@ -1,50 +1,93 @@
-from django.views.generic import ListView, FormView
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.views.generic import ListView
+from django.views.generic.edit import FormMixin
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.recipes.models import Recipe
 from django.db.models import Q
 from apps.search.forms import SearchForm
 
 
-class SearchListView(ListView):
+class SearchListView(FormMixin, ListView):
     model = Recipe
     template_name = "search/search.html"
     context_object_name = "recipes"
-    queryset = []
-
-    def post(self, request, *args, **kwargs):
-        self.object_list = self.queryset
-        context = self.get_context_data()
-        context["form"] = SearchForm(request.POST)
-        return self.render_to_response(context, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["form"] = SearchForm()
-        return context
-
-
-class SearchView(FormView):
-    http_method_names = ['post']
+    paginate_by = 30
     form_class = SearchForm
 
-    def form_valid(self, form):
-        ingredient_restriction = form.cleaned_data \
-            .get("ingredient_restriction")
-        include_ingredient_names = form.cleaned_data \
-            .get("include_ingredient_names").strip(",").split(",")
-        exclude_ingredient_names = form.cleaned_data \
-            .get("exclude_ingredient_names").strip(",").split(",")
-        recipe_name = form.cleaned_data.get("recipe_name")
+    def get(self, request, *args, **kwargs):
+        self.form = self.get_form(self.form_class)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.form = self.get_form(self.form_class)
+
+        if self.form.is_valid():
+            ingredient_restriction = self.form.cleaned_data \
+                .get("ingredient_restriction")
+            include_ingredient_names = self.form.cleaned_data \
+                .get("include_ingredient_names")
+            exclude_ingredient_names = self.form.cleaned_data \
+                .get("exclude_ingredient_names")
+            recipe_name = self.form.cleaned_data.get("recipe_name")
+
+            restrict = "true" if ingredient_restriction else ""
+
+            url_parameters = get_url_parameters(
+                restrict=restrict,
+                include=include_ingredient_names,
+                exclude=exclude_ingredient_names,
+                name=recipe_name
+            )
+
+            return redirect(reverse('search') + url_parameters)
+
+        return self.get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        ingredient_restriction = self.request.GET.get("restrict", "")
+        include_ingredient_names = self.request.GET.get("include", "")
+        exclude_ingredient_names = self.request.GET.get("exclude", "")
+        recipe_name = self.request.GET.get("name", "")
+
+        url_parameters = get_url_parameters(
+            restrict=ingredient_restriction,
+            include=include_ingredient_names,
+            exclude=exclude_ingredient_names,
+            name=recipe_name
+        )
+        self.url_parameters = url_parameters
+        if url_parameters == "":
+            return []
+
+        if include_ingredient_names:
+            include_ingredient_names = include_ingredient_names.split(",")
+        if exclude_ingredient_names:
+            exclude_ingredient_names = exclude_ingredient_names.split(",")
 
         recipes = get_query_recipes(ingredient_restriction,
                                     include_ingredient_names,
                                     exclude_ingredient_names,
                                     recipe_name)
 
-        return SearchListView.as_view(queryset=recipes)(self.request)
+        return recipes
 
-    def form_invalid(self, form):
-        return SearchListView.as_view()(self.request)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = self.form
+        if self.url_parameters == "":
+            context["url_parameters"] = "?"
+        else:
+            context["url_parameters"] = self.url_parameters + "&"
+        return context
+
+
+def get_url_parameters(**kwargs):
+    if all([value == "" for value in kwargs.values()]):
+        return ""
+    return "?" + "&".join([f"{kwarg}={value}"
+                           for kwarg, value in kwargs.items()
+                           if value != ""])
 
 
 def get_query_recipes(ingredient_restriction,
