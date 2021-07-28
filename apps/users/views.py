@@ -3,7 +3,6 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import DetailView
 from .forms import UserRegistrationForm
 from .models import User
 
@@ -40,8 +39,7 @@ class UserPasswordChangeView(PasswordChangeView):
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    fields = ['username', 'first_name', 'last_name', 'email',
-              'birthday']
+    fields = ['email']
     template_name = "users/edit.html"
 
     def get_object(self):

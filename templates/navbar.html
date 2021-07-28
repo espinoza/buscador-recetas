@@ -18,7 +18,7 @@
 
     <div class="navbar-nav collapse navbar-collapse" id="navbarMenu">
 
-      {% if request.user.level == 1 %}
+      {% if request.user.is_staff %}
         <a class="nav-link" href="{% url 'update_recipe_database' %}">
           Agregar receta
         </a>
@@ -30,7 +30,7 @@
 
           <a class="dropdown-toggle" href="#" id="navbarUserMenu"
              role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{request.user.username}}
+            {{request.user.email}}
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="navbarUserMenu">

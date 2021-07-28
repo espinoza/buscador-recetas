@@ -16,7 +16,7 @@ class UpdateRecipeDatabase(LoginRequiredMixin, FormView):
     template_name = "recipes/source.html"
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.level != 1:
+        if not request.user.is_staff:
             return redirect("/")
         return super().dispatch(request, *args, **kwargs)
 
@@ -26,7 +26,7 @@ class UpdateRecipeDatabase(LoginRequiredMixin, FormView):
 
 
 def add_recipe_from_source(request):
-    if not request.user.is_authenticated or request.user.level != 1:
+    if not request.user.is_authenticated or not request.user.is_staff:
         return redirect("/")
     url = request.GET["source_url"]
     new_recipe = save_recipe_from_url(url)
@@ -36,14 +36,14 @@ def add_recipe_from_source(request):
 
 
 def get_sources(request):
-    if not request.user.is_authenticated or request.user.level != 1:
+    if not request.user.is_authenticated or not request.user.is_staff:
         return redirect("/")
     get_sources_for_all_hosts()
     return redirect("update_recipe_database")
 
 
 def get_recipes_from_sources(request):
-    if not request.user.is_authenticated or request.user.level != 1:
+    if not request.user.is_authenticated or not request.user.is_staff:
         return redirect("/")
     sources = Source.objects.all()
     for source in sources:

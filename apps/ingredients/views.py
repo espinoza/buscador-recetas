@@ -15,7 +15,7 @@ class CheckRecipeIngredientsView(LoginRequiredMixin, FormView):
     template_name = "ingredients/check-recipe.html"
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.level != 1:
+        if not request.user.is_staff:
             return redirect("/")
         recipe = Recipe.objects.filter(id=self.kwargs['recipe_id'])
         if not recipe:
@@ -98,7 +98,7 @@ class AddNewIngredientView(LoginRequiredMixin, CreateView):
 
 
 def detect_ingredients_for_all_recipes(request):
-    if not request.user.is_authenticated or request.user.level != 1:
+    if not request.user.is_authenticated or not request.user.is_staff:
         return redirect("/")
     recipes = Recipe.objects.all()
     for recipe in recipes:
