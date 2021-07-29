@@ -16,4 +16,20 @@ urlpatterns = [
          views.AddNewIngredientView.as_view(),
          name='add_new_ingredient_to_recipe'),
 
+    path('edit',
+         views.edit_ingredients,
+         name='edit_ingredients'),
+
+    path('save_ingredient_name',
+         views.save_ingredient_name,
+         name='save_ingredient_name'),
+
+    path('<int:ingredient_id>/delete',
+         views.delete_ingredient,
+         name='delete_ingredient'),
+
+    path('name/<int:ingredient_name_id>/delete',
+         views.delete_ingredient_name,
+         name='delete_ingredient_name'),
+
 ]

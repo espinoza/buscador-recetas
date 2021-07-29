@@ -1,5 +1,6 @@
 from django import forms
-from apps.ingredients.models import Ingredient, IngredientName
+from django.forms import widgets
+from apps.ingredients.models import IngredientName
 
 
 class AddIngredientForm(forms.Form):
@@ -21,11 +22,23 @@ class AddIngredientForm(forms.Form):
             return new_ingredient
 
 
-class CreateIngredientForm(forms.ModelForm):
+class CreateIngredientNameForm(forms.ModelForm):
 
+    ingredient_id = forms.IntegerField(
+        widget=forms.HiddenInput(),
+        required=False
+    )
     class Meta:
         model = IngredientName
-        fields = ['singular', 'plural']
+        fields = ["singular", "plural"]
+        labels = {
+            "singular": "",
+            "plural": "",
+        }
+        widgets = {
+            "singular": forms.TextInput(attrs={"placeholder": "Singular"}),
+            "plural": forms.TextInput(attrs={"placeholder": "Plural"}),
+        }
 
     def clean_singular(self):
         singular = self.cleaned_data.get("singular")
