@@ -3,8 +3,10 @@ from . import views
 
 urlpatterns = [
 
-    path('',
-         views.SearchListView.as_view(),
-         name='search'),
+    path(
+        route='',
+        view=views.SearchListView.as_view(),
+        name='search'
+    ),
 
 ]

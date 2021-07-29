@@ -3,33 +3,34 @@ from . import views
 
 urlpatterns = [
 
-    path('check_recipe/<int:recipe_id>',
-         views.CheckRecipeIngredientsView.as_view(),
-         name='check_recipe_ingredients'),
-
-    path('detect_ingredients_for_all_recipes',
-         views.detect_ingredients_for_all_recipes,
-         name='detect_ingredients_for_all_recipes'
+    path(
+        route='detect_ingredients_for_all_recipes',
+        view=views.detect_ingredients_for_all_recipes,
+        name='detect_ingredients_for_all_recipes'
     ),
 
-    path('add_new_to_recipe/<int:recipe_id>',
-         views.AddNewIngredientView.as_view(),
-         name='add_new_ingredient_to_recipe'),
+    path(
+        route='edit',
+        view=views.edit_ingredients,
+        name='edit_ingredients'
+    ),
 
-    path('edit',
-         views.edit_ingredients,
-         name='edit_ingredients'),
+    path(
+        route='save_ingredient_name',
+        view=views.save_ingredient_name,
+        name='save_ingredient_name'
+    ),
 
-    path('save_ingredient_name',
-         views.save_ingredient_name,
-         name='save_ingredient_name'),
+    path(
+        route='<int:ingredient_id>/delete',
+        view=views.delete_ingredient,
+        name='delete_ingredient'
+    ),
 
-    path('<int:ingredient_id>/delete',
-         views.delete_ingredient,
-         name='delete_ingredient'),
-
-    path('name/<int:ingredient_name_id>/delete',
-         views.delete_ingredient_name,
-         name='delete_ingredient_name'),
+    path(
+        route='name/<int:ingredient_name_id>/delete',
+        view=views.delete_ingredient_name,
+        name='delete_ingredient_name'
+    ),
 
 ]

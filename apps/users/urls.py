@@ -3,24 +3,34 @@ from . import views
 
 urlpatterns = [
 
-    path('login/',
-         views.UserLoginView.as_view(),
-         name='login'),
+    path(
+        route='login/',
+        view= views.UserLoginView.as_view(),
+        name='login'
+    ),
 
-    path('logout/',
-         views.UserLogoutView.as_view(),
-         name='logout'),
+    path(
+        route='logout/',
+        view=views.UserLogoutView.as_view(),
+        name='logout'
+    ),
 
-    path('password_change/',
-         views.UserPasswordChangeView.as_view(),
-         name='password_change'),
+    path(
+        route='password_change/',
+        view=views.UserPasswordChangeView.as_view(),
+        name='password_change'
+    ),
 
-    path('registration/',
-         views.UserRegistrationView.as_view(),
-         name='registration'),
+    path(
+        route='registration/',
+        view=views.UserRegistrationView.as_view(),
+        name='registration'
+    ),
 
-    path('edit/',
-         views.UserUpdateView.as_view(),
-         name='edit_user'),
+    path(
+        route='edit/',
+        view=views.UserUpdateView.as_view(),
+        name='edit_user'
+    ),
 
 ]
