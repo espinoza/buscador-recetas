@@ -18,7 +18,7 @@ def save_recipe_from_source(source):
 
     soup = BeautifulSoup(page.content, 'html.parser')
     scraper = eval(source.host.get_recipe_info_function_name)
-    title, ingredient_lines, preparation_section = scraper(soup, source)
+    title, ingredient_lines = scraper(soup, source)
 
     if not title:
         return None
@@ -28,7 +28,6 @@ def save_recipe_from_source(source):
 
     recipe = Recipe.objects.create(
         title=title,
-        preparation_section=preparation_section,
     )
     for ingredient_line in ingredient_lines:
         new_ingredient_line = IngredientLine.objects.create(
@@ -55,9 +54,4 @@ def recetas_gratis_get_recipe_info(soup, source):
     ingredient_li_items = soup.find_all(class_="ingrediente")
     ingredient_lines = [li.text.strip("\n") for li in ingredient_li_items]
 
-    preparation_div_items = soup.find_all(class_="apartado")
-    instructions = [div.text.strip("\n")
-                    for div in preparation_div_items]
-    preparation_section = "\n\n".join(instructions)
-
-    return title, ingredient_lines, preparation_section
+    return title, ingredient_lines

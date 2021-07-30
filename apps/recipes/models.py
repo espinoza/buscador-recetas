@@ -6,7 +6,6 @@ class Recipe(models.Model):
     title = models.CharField(max_length=255)
     ingredients = models.ManyToManyField(to=Ingredient,
                                          related_name="recipes")
-    preparation_section = models.TextField(max_length=10000)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
