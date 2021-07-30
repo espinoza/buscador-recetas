@@ -41,7 +41,7 @@ class CreateIngredientNameForm(forms.ModelForm):
         }
 
     def clean_singular(self):
-        singular = self.cleaned_data.get("singular")
+        singular = self.cleaned_data.get("singular", "")
         if all(char.isalpha() or char.isspace() for char in singular):
             return singular
         else:
@@ -50,7 +50,9 @@ class CreateIngredientNameForm(forms.ModelForm):
             )
 
     def clean_plural(self):
-        plural = self.cleaned_data.get("plural")
+        plural = self.cleaned_data.get("plural", "")
+        if plural is None:
+            return None
         if all(char.isalpha() or char.isspace() for char in plural):
             return plural
         else:
