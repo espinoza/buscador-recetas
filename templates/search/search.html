@@ -58,6 +58,11 @@
               <h5 class="d-inline-block recipe-block-title">
                 <a href="{{ recipe.source.url }}">
                   {{recipe.title}}
+                    {% if request.user.is_staff %}
+                      {% if recipe.num_ingredients < recipe.num_lines %}
+                        <span class="text-danger">*</span>
+                      {% endif %}
+                    {% endif %}
                 </a>
               </h5>
             </div>
@@ -70,7 +75,8 @@
               {% endfor %}
             </div>
 
-            <a href="{{ recipe.source.host.url }}" class="fs-6 my-1 text-secondary">
+            <a href="{{ recipe.source.host.url }}"
+                  class="fs-6 my-1 text-secondary">
               {{recipe.source.host.name}}
             </a>
           

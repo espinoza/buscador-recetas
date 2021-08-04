@@ -13,6 +13,14 @@ class Recipe(models.Model):
     def name(self):
         return self.title
 
+    @property
+    def num_ingredients(self):
+        return len(self.ingredients.all())
+    
+    @property
+    def num_lines(self):
+        return len(self.ingredient_lines.all())
+
 
 class IngredientLine(models.Model):
     text = models.CharField(max_length=255)
