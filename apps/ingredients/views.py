@@ -1,9 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
-from apps.recipes.models import Recipe
 from apps.ingredients.models import Ingredient, IngredientName
 from apps.ingredients.forms import CreateIngredientNameForm
-from apps.ingredients.detect import detect_ingredients
 
 
 def edit_ingredients(request):
@@ -15,7 +13,7 @@ def edit_ingredients(request):
         return redirect("/")
 
     form = CreateIngredientNameForm()
-    ingredients = Ingredient.objects.all()
+    ingredients = Ingredient.objects.all().order_by("-updated_at")
     forms = {}
     for ingredient in ingredients:
         forms[ingredient] = CreateIngredientNameForm(

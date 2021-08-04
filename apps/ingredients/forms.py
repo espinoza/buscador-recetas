@@ -1,5 +1,4 @@
 from django import forms
-from django.forms import widgets
 from apps.ingredients.models import IngredientName
 
 
@@ -35,15 +34,21 @@ class CreateIngredientNameForm(forms.ModelForm):
             "singular": "",
             "plural": "",
         }
+        text_input = lambda singular_plural: forms.TextInput(
+            attrs={
+                "placeholder": singular_plural,
+                "size": 7,
+            }
+        )
         widgets = {
-            "singular": forms.TextInput(attrs={"placeholder": "Singular"}),
-            "plural": forms.TextInput(attrs={"placeholder": "Plural"}),
+            "singular": text_input("Singular"),
+            "plural": text_input("Plural"),
         }
 
     def clean_singular(self):
         singular = self.cleaned_data.get("singular", "")
         if all(char.isalpha() or char.isspace() for char in singular):
-            return singular
+            return singular.lower()
         else:
             raise forms.ValidationError(
                 "Nombre no válido."
@@ -54,7 +59,7 @@ class CreateIngredientNameForm(forms.ModelForm):
         if plural is None:
             return None
         if all(char.isalpha() or char.isspace() for char in plural):
-            return plural
+            return plural.lower()
         else:
             raise forms.ValidationError(
                 "Nombre no válido."
