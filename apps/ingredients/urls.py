@@ -4,12 +4,6 @@ from . import views
 urlpatterns = [
 
     path(
-        route='detect_ingredients_for_all_recipes',
-        view=views.detect_ingredients_for_all_recipes,
-        name='detect_ingredients_for_all_recipes'
-    ),
-
-    path(
         route='edit',
         view=views.edit_ingredients,
         name='edit_ingredients'

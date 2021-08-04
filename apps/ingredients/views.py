@@ -77,19 +77,6 @@ def delete_ingredient_name(request, ingredient_name_id):
     return redirect('edit_ingredients')
 
 
-def detect_ingredients_for_all_recipes(request):
-    """A view to go through each recipe and read ingredient lines to find
-    ingredient names and then add relationship with the corresponing
-    ingredient object.
-    """
-    if not request.user.is_authenticated or not request.user.is_staff:
-        return redirect("/")
-    recipes = Recipe.objects.all()
-    for recipe in recipes:
-        detect_ingredients(recipe)
-    return redirect("update_recipe_database")
-
-
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)

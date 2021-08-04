@@ -1,16 +1,7 @@
 from urllib.parse import urlparse
-from django.shortcuts import redirect
 from apps.recipes.models import Host, Source
 from bs4 import BeautifulSoup
 import requests
-
-
-def get_sources_for_all_hosts():
-    hosts = Host.objects.all()
-    for host in hosts:
-        get_sources_function = eval(host.get_sources_function_name)
-        get_sources_function()
-    return redirect("update_recipe_database")
 
 
 def save_source(url, host=None):
@@ -48,4 +39,5 @@ def recetas_gratis_get_sources():
             source_url = recipe_link['href']
             save_source(source_url, host)
 
+        print(f"Recetas Gratis: página {page_number} del catálogo")
         page_number += 1
