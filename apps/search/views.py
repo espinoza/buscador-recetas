@@ -26,9 +26,9 @@ class SearchListView(FormMixin, ListView):
             ingredient_restriction = self.form.cleaned_data \
                 .get("ingredient_restriction")
             include_ingredient_names = self.form.cleaned_data \
-                .get("include_ingredient_names")
+                .get("include_ingredient_names").lower()
             exclude_ingredient_names = self.form.cleaned_data \
-                .get("exclude_ingredient_names")
+                .get("exclude_ingredient_names").lower()
             recipe_name = self.form.cleaned_data.get("recipe_name")
 
             restrict = "true" if ingredient_restriction else ""

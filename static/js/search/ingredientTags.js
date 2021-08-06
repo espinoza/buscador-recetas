@@ -9,7 +9,7 @@ $(document).ready(function () {
     if ($(this).val().includes(",")) {
       let inputValue = $(this).val();
       let commaPosition = inputValue.indexOf(",");
-      inputValue = $(this).val().slice(0, commaPosition);
+      inputValue = $(this).val().slice(0, commaPosition).toLowerCase();
       $(this).val("");
       if (inputValue) {
         let tag = "<div class='tag-container'><span class='badge'>"
