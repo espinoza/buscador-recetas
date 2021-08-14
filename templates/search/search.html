@@ -53,33 +53,34 @@
       
         <div class="col-sm-12 col-md-6 col-lg-4">
           <div class="my-4 recipe-block">
-          
-            <div class="recipe-block-header">
-              <h5 class="d-inline-block recipe-block-title">
-                <a href="{%url 'go_to_source'%}?source={{recipe.source.url}}">
+
+            <a href="{{ recipe.source.host.url }}"
+               class="my-1 text-secondary source-host-name">
+              {{recipe.source.host.name}}
+            </a>
+
+            <a href="{%url 'go_to_source'%}?source={{recipe.source.url}}"
+               class="source-link">
+              <div class="recipe-block-header">
+                <h5 class="d-inline-block recipe-block-title">
                   {{recipe.title}}
                     {% if request.user.is_staff %}
                       {% if recipe.num_ingredients < recipe.num_lines %}
                         <span class="text-danger">*</span>
                       {% endif %}
                     {% endif %}
-                </a>
-              </h5>
-            </div>
+                </h5>
+              </div>
 
-            <div class="recipe-block-body">
-              {% for ingredient in recipe.ingredients.all %}
-                <span class="badge">
-                  {{ingredient.names.first.singular}}
-                </span>
-              {% endfor %}
-            </div>
-
-            <a href="{{ recipe.source.host.url }}"
-                  class="fs-6 my-1 text-secondary">
-              {{recipe.source.host.name}}
-            </a>
+              <div class="recipe-block-body">
+                {% for ingredient in recipe.ingredients.all %}
+                  <span class="badge">
+                    {{ingredient.names.first.singular}}
+                  </span>
+                {% endfor %}
+              </div>
           
+            </a>
           </div>
         </div>
       

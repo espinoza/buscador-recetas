@@ -43,3 +43,37 @@
   background-color: $text-on-dark-color;
   color: $primary-color;
 }
+
+.source-host-name {
+  text-decoration: none;
+  color: $text-color;
+  font-size: 12px;
+}
+
+.recipe-block {
+  padding: 3px;
+}
+
+.recipe-block-header {
+  color: $text-color;
+}
+
+.recipe-block-body {
+  .badge {
+    border: solid 1px $text-color-soft;
+    color: $text-color-soft;
+  }
+}
+
+.source-link:hover {
+  .recipe-block-title {
+    color: $primary-color;
+  }
+  .recipe-block-body {
+    .badge {
+      border: solid 1px $primary-color;
+      background-color: $primary-color;
+      color: $text-on-dark-color;
+    }
+  }
+}
