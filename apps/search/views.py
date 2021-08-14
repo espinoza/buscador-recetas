@@ -33,7 +33,7 @@ class SearchListView(FormMixin, ListView):
 
             restrict = "true" if ingredient_restriction else ""
 
-            url_parameters = get_url_parameters(
+            url_parameters = get_url_parameters_str(
                 restrict=restrict,
                 include=include_ingredient_names,
                 exclude=exclude_ingredient_names,
@@ -50,14 +50,15 @@ class SearchListView(FormMixin, ListView):
         exclude_ingredient_names = self.request.GET.get("exclude", "")
         recipe_name = self.request.GET.get("name", "")
 
-        url_parameters = get_url_parameters(
-            restrict=ingredient_restriction,
-            include=include_ingredient_names,
-            exclude=exclude_ingredient_names,
-            name=recipe_name
-        )
+        url_parameters = {
+            "restrict": ingredient_restriction,
+            "include": include_ingredient_names,
+            "exclude": exclude_ingredient_names,
+            "name": recipe_name
+        }
         self.url_parameters = url_parameters
-        if url_parameters == "":
+
+        if all([value == "" for value in url_parameters.values()]):
             return []
 
         if include_ingredient_names:
@@ -65,24 +66,36 @@ class SearchListView(FormMixin, ListView):
         if exclude_ingredient_names:
             exclude_ingredient_names = exclude_ingredient_names.split(",")
 
-        recipes = get_query_recipes(ingredient_restriction,
-                                    include_ingredient_names,
-                                    exclude_ingredient_names,
-                                    recipe_name)
+        recipes = get_query_recipes(
+            ingredient_restriction=ingredient_restriction,
+            include_ingredient_names=include_ingredient_names,
+            exclude_ingredient_names=exclude_ingredient_names,
+            recipe_name=recipe_name
+        )
 
         return recipes
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = self.form
-        if self.url_parameters == "":
+
+        form = self.form
+        form.initial = {
+            "ingredient_restriction": self.url_parameters["restrict"],
+            "include_ingredient_names": self.url_parameters["include"],
+            "exclude_ingredient_names": self.url_parameters["exclude"],
+            "recipe_name": self.url_parameters["name"]
+        }
+        context["form"] = form
+
+        url_parameters_string = get_url_parameters_str(**self.url_parameters)
+        if url_parameters_string == "":
             context["url_parameters"] = "?"
         else:
-            context["url_parameters"] = self.url_parameters + "&"
+            context["url_parameters"] = url_parameters_string + "&"
         return context
 
 
-def get_url_parameters(**kwargs):
+def get_url_parameters_str(**kwargs):
     if all([value == "" for value in kwargs.values()]):
         return ""
     return "?" + "&".join([f"{kwarg}={value}"
