@@ -1,4 +1,6 @@
-from django.shortcuts import redirect
+from apps.recipes.models import Source, Host
+from urllib.parse import urlparse
+from django.shortcuts import render, redirect
 from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.recipes.forms import SourceUrlForm
@@ -31,3 +33,35 @@ def add_recipe_from_source(request):
     if not new_recipe:
         return redirect('update_recipe_database')
     return redirect('check_recipe_ingredients', recipe_id=new_recipe.id)
+
+
+def go_to_source(request):
+    """A view to find source in database, add 1 click to its click counter,
+    and redirect to its url.
+    """
+    source_url = request.GET.get('source')
+    source_parsed_url = urlparse(source_url)
+
+    host = Host.objects.filter(
+        url_scheme=source_parsed_url.scheme,
+        url_netloc=source_parsed_url.netloc,
+    )
+    if not host:
+        return redirect('source_not_found')
+
+    path = source_parsed_url.path
+    source = Source.objects.filter(host=host[0], url_path=path)
+    if not source:
+        return redirect('source_not_found')
+    source = source[0]
+
+    source.clicks += 1
+    source.save()
+    return redirect(source.url)
+    
+
+def source_not_found(request):
+    """A view to say that a source is not found, when the user modify
+    the 'source' url parameter.
+    """
+    return render(request, 'recipes/source_not_found.html')
