@@ -6,10 +6,7 @@
   <link rel="stylesheet" href="{% static 'css/search.css' %}">
 {% endblock %}
 
-
-{% block title %}
-  <title>¡Busca tus recetas!</title>
-{% endblock %}
+{% block title %}El buscador de sabores{% endblock %}
 
 {% block contents %}
 
@@ -17,7 +14,9 @@
 
 <main class="container">
 
-  <h3 class="bright-title">El buscador de sabores</h3>
+  {% if not recipes %}
+    <h4 class="bright-title">¡Busca tus sabores favoritos!</h4>
+  {% endif %}
 
   <form class="main-search-form" method="post">
     {% csrf_token %}
@@ -52,7 +51,7 @@
       {% for recipe in recipes %}
       
         <div class="col-sm-12 col-md-6 col-lg-4">
-          <div class="my-4 recipe-block">
+          <div class="my-3 recipe-block">
 
             <a href="{{ recipe.source.host.url }}"
                class="my-1 text-secondary source-host-name">

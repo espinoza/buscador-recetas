@@ -52,7 +52,8 @@ $(document).ready(function () {
       let inputValue = inputField.val();
       let commaPosition = inputValue.indexOf(",");
       inputValue = inputField.val().slice(0, commaPosition).toLowerCase();
-      let remainingValue = inputField.val().slice(commaPosition+1).toLowerCase();
+      let remainingValue = inputField.val().slice(commaPosition+1)
+                                     .toLowerCase();
       inputField.val(remainingValue);
       if (inputValue) {
         putTag(inputValue, inputField)
@@ -68,7 +69,6 @@ $(document).ready(function () {
     let tag = "<div class='tag-container'><span class='badge'>"
       + inputValue + "</span></div>";
     inputField.before(tag);
-    $(".input-remaining-space").css("width", "50%");
   };
 
   function saveIngredient(inputValue, inputField) {
@@ -88,15 +88,20 @@ $(document).ready(function () {
 
   function setPlaceholder() {
     // Set placeholder at inputs corresponding to igredients
+    let normalWidth = 150;
     if (includeIngredients.length == 0) {
-      $("#include-input").attr("placeholder", "Incluir ingredientes");
+      $("#include-input")
+          .attr("placeholder", "Incluir ingredientes (separados por coma)")
+          .css("width", "100%");
     } else {
-      $("#include-input").attr("placeholder", "");
+      $("#include-input").attr("placeholder", "").css("width", normalWidth);
     }
     if (excludeIngredients.length == 0) {
-      $("#exclude-input").attr("placeholder", "Excluir ingredientes");
+      $("#exclude-input")
+          .attr("placeholder", "Excluir ingredientes (separados por coma)")
+          .css("width", "100%");
     } else {
-      $("#exclude-input").attr("placeholder", "");
+      $("#exclude-input").attr("placeholder", "").css("width", normalWidth);
     }
   };
 
