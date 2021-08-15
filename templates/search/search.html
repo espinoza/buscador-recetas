@@ -42,8 +42,14 @@
 
     <input class="bright-button mt-3" type="submit" value="BUSCAR RECETAS">
 
-  </form>
+    {% if request.session.unknown_names %}
+      <p>
+        Los siguientes ingredientes son desconocidos (¡Sabropedia
+        los estudiará!): {{ request.session.unknown_names }}
+      </p>
+    {% endif %}
 
+  </form>
 
   {% if recipes %}
 

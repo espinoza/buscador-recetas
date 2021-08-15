@@ -2,7 +2,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import ListView
 from django.views.generic.edit import FormMixin
-from apps.ingredients.models import Ingredient, IngredientName
+from apps.ingredients.models import (
+    Ingredient, IngredientName, UnknownIngredientName
+)
 from apps.recipes.models import Recipe
 from django.db.models import Q
 from apps.search.forms import SearchForm
@@ -17,6 +19,13 @@ class SearchListView(FormMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form(self.form_class)
+
+        # 'unknown_ingredient_names' should exist only if this get method
+        # is executed due to a redirect from post method
+        request.session["post_step"] = request.session.get("post_step", 0) + 1
+        if request.session["post_step"] > 1:
+            request.session["unknown_ingredient_names"] = None
+
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -33,14 +42,31 @@ class SearchListView(FormMixin, ListView):
 
             restrict = "true" if ingredient_restriction else ""
 
-            url_parameters = get_url_parameters_str(
+            # Unknown ingredients are not used
+            known_included, unknown_included = split_known_unknown(
+                include_ingredient_names
+            )
+            known_excluded, unknown_excluded = split_known_unknown(
+                exclude_ingredient_names
+            )
+
+            # Unknown ingredients are reported
+            unknown_names = set(unknown_included + unknown_excluded)
+            for name in unknown_names:
+                UnknownIngredientName.objects.get_or_create(name=name)
+
+            url_parameters_str = get_url_parameters_str(
                 restrict=restrict,
-                include=include_ingredient_names,
-                exclude=exclude_ingredient_names,
+                include=",".join(known_included),
+                exclude=",".join(known_excluded),
                 name=recipe_name
             )
 
-            return redirect(reverse('search') + url_parameters)
+            # Unknown ingredients are shown in template
+            request.session["unknown_names"] = ", ".join(set(unknown_names))
+            request.session["post_step"] = 0
+
+            return redirect(reverse('search') + url_parameters_str)
 
         return self.get(request, *args, **kwargs)
 
@@ -87,11 +113,11 @@ class SearchListView(FormMixin, ListView):
         }
         context["form"] = form
 
-        url_parameters_string = get_url_parameters_str(**self.url_parameters)
-        if url_parameters_string == "":
+        url_parameters_str = get_url_parameters_str(**self.url_parameters)
+        if url_parameters_str == "":
             context["url_parameters"] = "?"
         else:
-            context["url_parameters"] = url_parameters_string + "&"
+            context["url_parameters"] = url_parameters_str + "&"
         return context
 
 
@@ -101,6 +127,24 @@ def get_url_parameters_str(**kwargs):
     return "?" + "&".join([f"{kwarg}={value}"
                            for kwarg, value in kwargs.items()
                            if value != ""])
+
+
+def split_known_unknown(ingredient_names_str):
+    """Get a string with comma separated ingredient names and returns two
+    lists: known ingredient names and unknown ingredient names.
+    """
+    ingredient_names_list = ingredient_names_str.split(",")
+    known_ingredient_names = []
+    unknown_ingredient_names = []
+    for name in ingredient_names_list:
+        names_found = IngredientName.objects.filter(
+            Q(singular=name) | Q(plural=name)
+        )
+        if names_found and name not in known_ingredient_names:
+            known_ingredient_names.append(name)
+        elif name not in unknown_ingredient_names:
+            unknown_ingredient_names.append(name)
+    return known_ingredient_names, unknown_ingredient_names
 
 
 def get_query_recipes(ingredient_restriction,
