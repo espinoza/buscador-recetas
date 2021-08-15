@@ -64,15 +64,18 @@
   }
 }
 
-.source-link:hover {
-  .recipe-block-title {
-    color: $primary-color;
-  }
-  .recipe-block-body {
+.source-link {
+  text-decoration: none;
+
+  &:hover {
+    .recipe-block-title {
+      color: $primary-color;
+    }
     .badge {
       border: solid 1px $primary-color;
       background-color: $primary-color;
       color: $text-on-dark-color;
     }
   }
+
 }
