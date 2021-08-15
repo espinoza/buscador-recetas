@@ -1,13 +1,22 @@
-# Buscador de recetas
+# Sabropedia
 
-Aplicación web para buscar recetas a partir de sus ingredientes.
+Aplicación web para buscar recetas a partir de sus ingredientes o por nombre de receta.
 
-## Requisitos
-* `Python3`
-* `PostgreSQL`
-* `Node.js` con `Node-Sass`
+## Características
+* Filtrar recetas por ingredientes que se desea incluir.
+* Excluir según ingredientes no deseados.
+* Opción de restringir ingredientes a aquellos que son ingresados, sin incluir otro adicional.
+* Filtrar por nombre de receta
+* Los ingredientes se pueden escribir con cualquier nombre. Ejemplo: *frijoles*, *porotos* y *alubias* generan los mismos resultados.
 
 ## Instalación
+
+### Requisitos
+* `Python3`
+* `PostgreSQL`
+* `Sass` con `Node-Sass`
+
+### Pasos a seguir
 
 1. Clonar el repositorio:
 ```
@@ -72,3 +81,9 @@ python manage.py runserver
 
 Se puede acceder a la aplicación a través de un navegador web,
 utilizando la dirección `http://localhost:8000`.
+
+## Inicializar base de datos
+
+1. `python manage.py getsources`
+2. `python manage.py getrecipes`
+3. `python manage.py detectingredients`
