@@ -138,7 +138,7 @@ def split_known_unknown(ingredient_names_str):
     unknown_ingredient_names = []
     for name in ingredient_names_list:
         names_found = IngredientName.objects.filter(
-            Q(singular=name) | Q(plural=name)
+            Q(singular=name, is_active=True) | Q(plural=name, is_active=True)
         )
         if names_found and name not in known_ingredient_names:
             known_ingredient_names.append(name)
@@ -153,12 +153,12 @@ def get_query_recipes(ingredient_restriction,
                       recipe_name):
 
     include_ingredient_names_db = IngredientName.objects.filter(
-        Q(singular__in=include_ingredient_names)
-        | Q(plural__in=include_ingredient_names)
+        Q(singular__in=include_ingredient_names, is_active=True)
+        | Q(plural__in=include_ingredient_names, is_active=True)
     )
     exclude_ingredient_names_db = IngredientName.objects.filter(
-        Q(singular__in=exclude_ingredient_names)
-        | Q(plural__in=exclude_ingredient_names)
+        Q(singular__in=exclude_ingredient_names, is_active=True)
+        | Q(plural__in=exclude_ingredient_names, is_active=True)
     )
     recipes = Recipe.objects.all()
 
