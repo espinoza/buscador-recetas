@@ -42,7 +42,7 @@ class SearchListView(FormMixin, ListView):
 
             restrict = "true" if ingredient_restriction else ""
 
-            # Unknown ingredients are not used
+            # Unknown (or inactive known) ingredients are not used
             known_included, unknown_included = split_known_unknown(
                 include_ingredient_names
             )
@@ -50,7 +50,7 @@ class SearchListView(FormMixin, ListView):
                 exclude_ingredient_names
             )
 
-            # Unknown ingredients are reported
+            # Unknown (or inactive known) ingredients are reported
             unknown_names = set(unknown_included + unknown_excluded)
             for name in unknown_names:
                 UnknownIngredientName.objects.get_or_create(name=name)
@@ -62,7 +62,7 @@ class SearchListView(FormMixin, ListView):
                 name=recipe_name
             )
 
-            # Unknown ingredients are shown in template
+            # Unknown (or inactive known) ingredients are shown in template
             request.session["unknown_names"] = ", ".join(set(unknown_names))
             request.session["post_step"] = 0
 
@@ -122,6 +122,9 @@ class SearchListView(FormMixin, ListView):
 
 
 def get_url_parameters_str(**kwargs):
+    """Return a string containing url parameters just as they should appear
+    at url.  The input is passed as one keyword argument for each parameter.
+    """
     if all([value == "" for value in kwargs.values()]):
         return ""
     return "?" + "&".join([f"{kwarg}={value}"
@@ -130,13 +133,20 @@ def get_url_parameters_str(**kwargs):
 
 
 def split_known_unknown(ingredient_names_str):
-    """Get a string with comma separated ingredient names and returns two
+    """Get a string with comma separated ingredient names and return two
     lists: known ingredient names and unknown ingredient names.
     """
+    if ingredient_names_str == "":
+        return [], []
+
     ingredient_names_list = ingredient_names_str.split(",")
     known_ingredient_names = []
     unknown_ingredient_names = []
+
     for name in ingredient_names_list:
+        # If an ingredient name exists but is not active, it is reported
+        # to the user as unknown to avoid confusion about exixting ingredient
+        # names that are not in search results
         names_found = IngredientName.objects.filter(
             Q(singular=name, is_active=True) | Q(plural=name, is_active=True)
         )
@@ -144,6 +154,7 @@ def split_known_unknown(ingredient_names_str):
             known_ingredient_names.append(name)
         elif name not in unknown_ingredient_names:
             unknown_ingredient_names.append(name)
+
     return known_ingredient_names, unknown_ingredient_names
 
 
