@@ -56,8 +56,10 @@ $(document).ready(function () {
                                      .toLowerCase();
       inputField.val(remainingValue);
       if (inputValue) {
-        putTag(inputValue, inputField)
-        saveIngredient(inputValue, inputField)
+        let cleanedInputValue = inputValue.trim().split(" ")
+                                          .filter(s => s !== "").join(" ");
+        putTag(cleanedInputValue, inputField)
+        saveIngredient(cleanedInputValue, inputField)
       }
     }
     setIngredientValues();

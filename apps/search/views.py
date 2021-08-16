@@ -147,13 +147,15 @@ def split_known_unknown(ingredient_names_str):
         # If an ingredient name exists but is not active, it is reported
         # to the user as unknown to avoid confusion about exixting ingredient
         # names that are not in search results
+        cleaned_name = " ".join(name.strip().split(" "))
         names_found = IngredientName.objects.filter(
-            Q(singular=name, is_active=True) | Q(plural=name, is_active=True)
+            Q(singular=cleaned_name, is_active=True)
+            | Q(plural=cleaned_name, is_active=True)
         )
-        if names_found and name not in known_ingredient_names:
-            known_ingredient_names.append(name)
+        if names_found and cleaned_name not in known_ingredient_names:
+            known_ingredient_names.append(cleaned_name)
         elif name not in unknown_ingredient_names:
-            unknown_ingredient_names.append(name)
+            unknown_ingredient_names.append(cleaned_name)
 
     return known_ingredient_names, unknown_ingredient_names
 
