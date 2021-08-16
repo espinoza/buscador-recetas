@@ -24,7 +24,7 @@ class SearchListView(FormMixin, ListView):
         # is executed due to a redirect from post method
         request.session["post_step"] = request.session.get("post_step", 0) + 1
         if request.session["post_step"] > 1:
-            request.session["unknown_ingredient_names"] = None
+            request.session["unknown_names"] = None
 
         return super().get(request, *args, **kwargs)
 
@@ -71,9 +71,9 @@ class SearchListView(FormMixin, ListView):
         return self.get(request, *args, **kwargs)
 
     def get_queryset(self):
-        ingredient_restriction = self.request.GET.get("restrict", "")
-        include_ingredient_names = self.request.GET.get("include", "")
-        exclude_ingredient_names = self.request.GET.get("exclude", "")
+        ingredient_restriction = self.request.GET.get("restrict", "").lower()
+        include_ingredient_names = self.request.GET.get("include", "").lower()
+        exclude_ingredient_names = self.request.GET.get("exclude", "").lower()
         recipe_name = self.request.GET.get("name", "")
 
         url_parameters = {
@@ -154,7 +154,7 @@ def split_known_unknown(ingredient_names_str):
         )
         if names_found and cleaned_name not in known_ingredient_names:
             known_ingredient_names.append(cleaned_name)
-        elif name not in unknown_ingredient_names:
+        if not names_found and cleaned_name not in unknown_ingredient_names:
             unknown_ingredient_names.append(cleaned_name)
 
     return known_ingredient_names, unknown_ingredient_names
@@ -177,6 +177,9 @@ def get_query_recipes(ingredient_restriction,
 
     if include_ingredient_names_db or ingredient_restriction:
         recipes = Recipe.objects.exclude(ingredients=None)
+
+    if recipe_name:
+        recipes = recipes.filter(title__icontains=recipe_name.lower())
 
     if include_ingredient_names_db or exclude_ingredient_names_db:
 
@@ -205,10 +208,5 @@ def get_query_recipes(ingredient_restriction,
             recipes = recipes.intersection(
                 Recipe.objects.exclude(ingredients=ingredient)
             )
-
-    if recipe_name:
-
-        recipes = [recipe for recipe in recipes
-                   if recipe_name.lower() in recipe.name.lower()]
 
     return recipes
