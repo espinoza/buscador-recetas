@@ -13,23 +13,21 @@ def detect_ingredients(recipe):
     for ingredient_line in recipe.ingredient_lines.all():
         line = ingredient_line.text.lower()
 
-        # Ingredient line as a list of phrases without special characters
+        # Analyse concatenations of words that could be ingredient names
         for char in SPECIAL_CHARACTERS:
             line = line.replace(char, "&")
         phrases = [phrase.strip(" ") for phrase in re.split(r'&|\sy\s', line)
                                      if re.search(r'\w', phrase)]
 
         for phrase in phrases:
-            # Analyse concatenations of words that could be ingredient names
             words = [word for word in phrase.split(" ")
                           if not word.isnumeric()]
 
-            # The ingredient name is more likely to appear to the right
-            for start in range(len(words)-1, -1, -1):
-                end = len(words)
+            for end in range(len(words), 0, -1):
+                start = 0
                 ingredient_found = False
 
-                while not ingredient_found and end > start:
+                while not ingredient_found and start < end:
                     mini_phrase = " ".join(words[start:end])
                     ingredients = Ingredient.objects.filter(
                         Q(names__singular=mini_phrase)
@@ -39,7 +37,5 @@ def detect_ingredients(recipe):
                     if ingredients:
                         ingredient_found = True
                         recipe.ingredients.add(*ingredients)
-                        end = start
                     else:
-                        end -= 1
-
+                        start += 1
