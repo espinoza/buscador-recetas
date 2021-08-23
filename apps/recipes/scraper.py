@@ -45,7 +45,7 @@ def recetas_gratis_get_recipe_info(soup, source):
     if soup.find(class_="ctrl-error action-error"):
         if source.clicks == 0:
             source.delete()
-        return None, None, None
+        return None, None
 
     title_text = soup.find(class_="titulo titulo--articulo").text
     start = 10 if "Receta de " in title_text else 0
@@ -53,5 +53,21 @@ def recetas_gratis_get_recipe_info(soup, source):
 
     ingredient_li_items = soup.find_all(class_="ingrediente")
     ingredient_lines = [li.text.strip("\n") for li in ingredient_li_items]
+
+    return title, ingredient_lines
+
+
+def recetas_de_rechupete_get_recipe_info(soup, source):
+    if soup.find(id="error404") or not soup.find(id="ingredients"):
+        if source.clicks == 0:
+            source.delete()
+        return None, None
+
+    title_text = soup.header.h1.text.strip("\t\r\n")
+    end = title_text.find(".") if "." in title_text else len(title_text)
+    title = title_text[:end]
+
+    ingredient_li_items = soup.find(id="ingredients").find_all('li')
+    ingredient_lines = [li.text for li in ingredient_li_items]
 
     return title, ingredient_lines

@@ -41,3 +41,30 @@ def recetas_gratis_get_sources():
 
         print(f"Recetas Gratis: página {page_number} del catálogo")
         page_number += 1
+
+
+def recetas_de_rechupete_get_sources():
+    host = Host.objects.get(name="Recetas de rechupete")
+    base_url = "https://www.recetasderechupete.com/todas/recetas/page/"
+    page_number = 1
+    got_all_sources = False
+
+    while not got_all_sources:
+        url = base_url + str(page_number)
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+
+        recipe_posts = soup.find_all('div', class_="post")
+        recipe_links = [post.a for post in recipe_posts]
+        for recipe_link in recipe_links:
+            source_url = recipe_link['href']
+            save_source(source_url, host)
+
+        print(f"Recetas de rechupete: página {page_number} del catálogo")
+        page_number += 1
+
+        button_next = soup.find('a', class_="next page-numbers")
+        
+        if not button_next:
+            got_all_sources = True
+            continue

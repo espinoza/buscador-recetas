@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print("--- Obteniendo recetas desde fuentes ---")
-        sources = Source.objects.all()
+        sources = Source.objects.filter(host__available=True)
         for source in sources:
             print(f"Leyendo {source.url}")
             save_recipe_from_source(source)
