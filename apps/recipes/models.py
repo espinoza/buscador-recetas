@@ -23,7 +23,7 @@ class Recipe(models.Model):
 
 
 class IngredientLine(models.Model):
-    text = models.CharField(max_length=255)
+    text = models.TextField()
     recipe = models.ForeignKey(to=Recipe,
                                related_name="ingredient_lines",
                                on_delete=models.CASCADE,
